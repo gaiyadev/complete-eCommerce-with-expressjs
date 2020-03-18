@@ -16,13 +16,17 @@ router.get('/', (req, res, next) => {
 
 /* GET Dashboard page. */
 router.get('/dashboard', ensureAuthenicated, (req, res, next) => {
-  let role = Admin.find({ Role: 'Administrator'}, (err, role) => {
-    if(err) throw err;
-    const name = req.user.Username;
-    const username = name.toUpperCase();
-    res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-    req.session.errors = null;
-  });
+  try {
+    let role = Admin.find({ Role: 'Administrator'}, (err, role) => {
+      if(err) throw err;
+      const name = req.user.Username;
+      const username = name.toUpperCase();
+      res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
+      req.session.errors = null;
+    });
+  } catch (error) {
+    console.log(error);
+  }
  
 });
 
@@ -990,12 +994,12 @@ router.post('/product/phones/:id', upload.single('product_image'), async (req, r
       if (err) { return done(err); 
       }
       if (!admin) { 
-     return done (null, false, {message: 'Invalid username or password'} );
+     return done (null, false);
       }
        Admin.verifyPassword(password, admin.Password, (err, isMatch) => {
          if(err) return done(err);
          if(!isMatch) {
-           return done(null, false, {message: 'Invalid username or password'});
+           return done(null, false);
          }
          return done(null, admin); 
        } ); 
@@ -1009,10 +1013,7 @@ router.post('/product/phones/:id', upload.single('product_image'), async (req, r
 
  router.post('/login', passport.authenticate('local', { failureRedirect: '/access/', successRedirect: '/access/dashboard',
    failureFlash: true,
-   successFlash: 'Welcome!',
-   failureFlash: 'Invalid username or password.'
       }), function(req,  res) {
-        req.flash('info', 'yewad')
 });
 
 // Route Middleware
