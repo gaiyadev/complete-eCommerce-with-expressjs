@@ -1,0 +1,23 @@
+ {{# if errors }}
+             {{# each errors }}
+                <p class="alert alert-danger">{{ this.msg }}</p>
+           {{/each}}
+                {{else}}
+                  {{# if success}}
+                      <p id="alert" class="alert alert-success">New Admin Registered successfully</p>
+                  {{/if}}
+            {{/if}}
+
+             {{# if message }}
+                     <div class="alert alert-{{message.type}}">
+                  <p id="alert"><strong>{{ message.intro }}</strong> {{message.message}}</p> 
+                     </div>
+
+                  {{/if}}
+
+
+<style>
+  #alert {
+    color: #000;
+  }
+</style>

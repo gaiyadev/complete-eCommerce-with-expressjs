@@ -1,0 +1,155 @@
+  <div class="container-fluid">
+{{> messages }}
+ {{#if product }}
+   {{#each product }}  
+     <div class="row-fluid">
+    <div class="span12">
+      <div class="widget-box">
+        <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+          <h5 class="title" id="title">Update Product infomation</h5>
+        </div>
+        <br/>
+        <div class="widget-content nopadding">
+          <form action="/access/product/phones/{{_doc._id }} " method="post" enctype="multipart/form-data" class="form-horizontal">
+            <div class="control-group">
+              <label class="control-label">Product Name :</label>
+              <div class="controls">
+                <input type="text" class="span11" value="{{ _doc.ProductName }}" name="productName" id="text" placeholder="Enter product number" />
+              </div>
+            </div>
+            <input type="hidden" name="id" value=" {{_doc._id}} ">
+             <input type="hidden" name="pic_image" value="{{ _doc.ProductImage }}" />
+            <div class="control-group">
+              <label class="control-label" for="category">Product Category :</label>
+              <div class="controls">
+               <select  class="form-control span11" name="category" id="category" >
+                 <option value="">Choose Category</option>
+                   <option value="Men Fashion">Men Fashion</option>
+                 <option value="Women Fashion">Women Fashion</option>
+                   <option value="Shoes">Shoes</option>
+                  <option value="Phones and  Tablets">Phones and  Tablets</option>
+                 <option value="Jewlyries">  Jewlyries</option>
+               </select>
+              </div>
+            </div>
+
+               <div class="control-group">
+              <label class="control-label">Price:</label>
+              <div class="controls">
+                <input type="text" placeholder="Enter product price" value="{{ _doc.ProductPrice }}" class="span11" name="Price" id="text" placeholder="Product Price (1,200)" />
+              </div>
+            </div>
+              <div class="control-group">
+              <label class="control-label" for="category">Product Size:</label>
+              <div class="controls">
+               <select  class="form-control span11" name="size" id="size" >
+                 <option value="">Choose size</option>
+                 <option value="M">M</option>
+                 <option value="XL">XL</option>
+                   <option value="XXL">XXL</option>
+                  <option value="S">S</option>
+                 <option value="XS"> XS</option>
+               </select>
+              </div>
+            </div>
+          
+            <div class="control-group">
+              <label class="control-label">SKU Number</label>
+              <div class="controls">
+                <input type="text" placeholder="SKU number" name="sku" value="{{ _doc.SKUNumber }}"  class="span11"  id="text" placeholder="Enter SKU (SKU001)"  />
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Product Brand :</label>
+              <div class="controls">
+                <input type="text" placeholder="Product Brand" class="span11" value="{{ _doc.ProductBrand }}" name="brand" id="text" placeholder="Product brand" />
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Product Description:</label>
+             <div class="controls">
+              <textarea class="textarea_editor span11" name="Description" rows="6"  placeholder="Enter text ...">
+                  {{ _doc.ProductDescription }}
+              </textarea>
+            </div>
+            </div>
+
+              <div class="control-group">
+              <label class="control-label">Product Image :</label>
+              <div class="controls">
+                <input type="file" accept="image/gif, image/jpeg, image/png" class="span11" name="product_image" id="file" onchange="loadFile(event)">
+              </div>
+            </div>
+          <p><img src="/../uploads/{{ _doc.ProductImage }}" id="output" width="200" /></p>
+            <div class="form-actions">
+              <button type="submit" id="btn" class="btn btn-success">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+             {{/each}}
+           {{else}}
+                <h3 style=" color:red; margin-left: 400px;" class="text-center">No Record found</h3>
+            
+            {{/if}}
+      </div>
+    </div>
+  
+  </div>
+</div>
+  </div>
+</div>
+<script>
+let loadFile = (event) => {
+	var image = document.getElementById('output');
+	image.src = URL.createObjectURL(event.target.files[0]);
+};
+	$('.textarea_editor').wysihtml5();
+</script>
+<!--end-main-container-part-->
+
+<style>
+  img {
+    margin-left: 400px;
+  }
+  #file {
+  height: 44px;
+	border: none;
+	padding: 0 18px;
+	background: #f0f0f0;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	font-size: 14px;
+  }
+  #text, select {
+	height: 44px;
+	border: none;
+	padding: 0 18px;
+	background: #f0f0f0;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	font-size: 14px;
+}
+#title {
+  font-size: 20px;
+}
+ #btn {
+	width: 150px;
+	border: none;
+  height: 39px;
+	padding: 0 18px;
+	border-radius: 10px;
+}
+textarea {
+  width: 100%;
+	border: none;
+	padding: 0 18px;
+	background: #f0f0f0;
+	border-radius: 10px;
+  padding: 12px 10px;
+	margin-bottom: 20px;
+	font-size: 14px;
+
+}
+
+</style>

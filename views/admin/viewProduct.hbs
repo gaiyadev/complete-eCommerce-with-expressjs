@@ -1,0 +1,58 @@
+
+<!-- product section -->
+		<div class="container-fluid">
+              {{#if product }}
+                 {{#each product }}  
+			<div class="row">
+                <div class="col-md-4">
+				   <img  src="/../uploads/{{ _doc.ProductImage }}" height="20px" width="400px" alt="single-product-image">
+                </div>
+                <div style="float: right; margin-top:-350px; " class="col-md-8">
+                  <div class="widget-content nopadding">
+                   <table  class="table table-bordered data-table">
+                       <thead>
+                           <th id="th">Product Name</th>
+                           <th id="th">Product Price</th>
+                           <th id="th"> Size</th>
+                           <th id="th"> Brand</th>
+                           <th id="th">SKU</th>
+                           <th>Category</th>
+                       </thead>
+                      
+                       <tbody>
+                           <tr>
+                               <td> {{ _doc.ProductName }} </td>
+                               <td>&#8358 {{_doc.ProductPrice }}</td>
+                               <td>{{_doc.ProductSize }}</td>
+                               <th>{{_doc.ProductBrand}}</th>
+                               <td>{{_doc.SKUNumber }}</td>
+                               <td> {{ _doc.ProductCategory }} </td>
+                           </tr>
+                       </tbody>
+               
+                <table><br/><br/>
+                    <p id="title">Product Description</p>
+                    <p style="margin-left: 50px;" readonly name=""  id=""> {{ _doc.ProductDescription }} </p>
+                          {{/each}}
+                {{else}}
+                  <tr>
+                    <td><h3 style=" color:red; margin-left: 400px;" class="text-center">No Record found</h3><td>
+                  </tr>
+                </table>
+            {{/if}}
+                   </table>
+                   </div>
+                </div>
+            </div>
+	 	</div>
+        </div>
+	<!-- product section end -->
+
+
+	<style>
+    #th, #title {
+            height: 50px;
+            font-size: 20px;
+            color: darkred;
+        }
+    </style>
