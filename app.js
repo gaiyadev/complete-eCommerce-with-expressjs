@@ -39,7 +39,6 @@ app.engine( 'hbs', hbs( {
 }
 }));
 
-app.use(flash());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -55,14 +54,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(ExpressSession({
   secret: 'max', 
   saveUninitialized: false, 
-  resave: false
+  resave: false,
+  cookie:{
+    maxAge: 60000
+  }
  }));
  app.use(passport.initialize());
  app.use(passport.session());
  
  // Express vaidator middleware
  app.use(expressValidator());
-
+ app.use(flash());
 app.use(expressFlash()); //flash message
 
 // Custom flash middleware 

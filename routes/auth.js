@@ -24,7 +24,7 @@ router.get('/dashboard', ensureAuthenicated, (req, res, next) => {
       const username = name.toUpperCase();
       res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
       req.session.errors = null;
-      console.log(role);
+     // console.log(role);
     }).select({ Role: 1});
   } catch (error) {
     console.log(error);
@@ -69,7 +69,8 @@ router.get('/women', ensureAuthenicated, async (req, res, next) => {
   try {
     const name = req.user.Username;
     const username = name.toUpperCase();
-    await Product.find({ ProductCategory: 'Women Fashion'}, (err, products) => {
+    const id = req.user._id;
+    await Product.find({ ProductCategory: 'Women Fashion',  AuthorCreated: id }, (err, products) => {
       if(err){
         console.log(err);
       }else {
@@ -86,8 +87,9 @@ router.get('/women', ensureAuthenicated, async (req, res, next) => {
 router.get('/shoes', ensureAuthenicated, async (req, res, next) => {
   try {
     const name = req.user.Username;
+    const id = req.user._id;
     const username = name.toUpperCase();
-    await Product.find({ ProductCategory: 'Shoes'}, (err, products) => {
+    await Product.find({ ProductCategory: 'Shoes',  AuthorCreated: id }, (err, products) => {
       if(err){
         console.log(err);
       }else {
@@ -104,8 +106,9 @@ router.get('/shoes', ensureAuthenicated, async (req, res, next) => {
 router.get('/phones', ensureAuthenicated, async (req, res, next) => {
   try {
     const name = req.user.Username;
+    const id = req.user._id;
     const username = name.toUpperCase();
-    await Product.find({ ProductCategory: 'Phones and  Tablets'}, (err, products) => {
+    await Product.find({ ProductCategory: 'Phones and  Tablets', AuthorCreated: id }, (err, products) => {
       if(err){
         console.log(err);
       }else {
@@ -122,8 +125,9 @@ router.get('/phones', ensureAuthenicated, async (req, res, next) => {
 router.get('/jewlyry', ensureAuthenicated, async (req, res, next) => {
   try {
     const name = req.user.Username;
+    const id = req.user._id;
     const username = name.toUpperCase();
-    await Product.find({ ProductCategory: 'Jewlyries'}, (err, products) => {
+    await Product.find({ ProductCategory: 'Jewlyries', AuthorCreated: id }, (err, products) => {
       if(err){
         console.log(err);
       }else {
@@ -348,7 +352,15 @@ router.post('/product/phones/delete/', async (req, res) => {
 
 /* GET User profile page. */
 router.get('/user-profile', ensureAuthenicated, (req, res, next) => {
-  res.render('admin/userprofile', { title: 'NodeStore Dashboard Categories', layout:'adminlayouts.hbs'});
+  let id = req.user._id;
+  const name = req.user.Username;
+  const username = name.toUpperCase();
+  Admin.findOne({_id: id }, (err, admin) => {
+    if(err) throw err;
+    res.render('admin/userprofile', { title: 'NodeStore Dashboard Categories', username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors, admin:admin});
+  console.log('see it');
+    console.log(admin);
+  });
 });
 
 /* GET User Chnage paswordx page. */
@@ -1025,8 +1037,9 @@ router.post('/product/phones/:id', upload.single('product_image'), async (req, r
 
 
  router.post('/login', passport.authenticate('local', { failureRedirect: '/access/', successRedirect: '/access/dashboard',
-   failureFlash: true,
+   //failureFlash: true,
       }), function(req,  res) {
+
 });
 
 // Route Middleware
@@ -1054,5 +1067,49 @@ passport.deserializeUser(function(id, done) {
 });
 
 
+
+
+// Updating Admisn Profile
+router.post('/admin/update/:id', async(req, res, next) => {
+  try {
+    let first_name                    = req.body.first_name;
+    let last_name                     = req.body.last_name;
+    let username                      = req.body.username;
+     let id                           = req.params.id;
+    // Validation form inputs
+    req.checkBody('first_name', 'First name field is required').notEmpty().isLength({min:4, max:50}).withMessage('First Name Must be at least 4 chars long');
+    req.checkBody('last_name', 'Last name field is required').notEmpty().isLength({min:4, max:50}).withMessage('Last Name Must be at least 4 chars long');
+ //   req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
+    req.checkBody('username', 'Username field is required').notEmpty().isLength({min:4, max:50}).withMessage('Username Must be at least 4 chars long');
+    
+  // Checking if errors exist
+    let errors = req.validationErrors();
+      if (errors) {
+          req.session.errors = errors;
+          req.session.success = false;
+          res.redirect('/access/user-profile');
+    }else {
+            // Checking if Admin already exist
+            await  Admin.update({_id: id }, { 
+              FirstName: first_name,
+              LastName: last_name,
+              Username: username,  
+      },  (err) => {
+      if(err) throw err; 
+          req.session.message = {
+            type: 'success',
+            intro: '',
+            message: 'Profile updated successfully'
+        }
+            res.location('/access/user-profile');
+            res.redirect('/access/user-profile'); 
+      }); 
+    }  
+    } catch (error) {
+      console.log(error);
+   }
+  });
+   // Ending of code to add new admins
+  
 
 module.exports = router;
