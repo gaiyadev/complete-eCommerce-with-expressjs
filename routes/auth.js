@@ -38,8 +38,11 @@ router.get('/product', ensureAuthenicated, (req, res, next) => {
   const id = req.user._id;
   const name = req.user.Username;
   const username = name.toUpperCase();
-  res.render('admin/product', { title: 'NodeStore Dashboard Categories', username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
+  Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+    if(err) throw err;
+    res.render('admin/product', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
   req.session.errors = null;
+  }).select({ Role: 1});
  } catch (error) {
    console.log(error);
  }
@@ -55,7 +58,10 @@ router.get('/men', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        res.render('admin/men', { title: 'NodeStore Dashboard Categories', username: username, products:products, layout:'adminlayouts.hbs'});
+        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+          if (err) throw err;
+          res.render('admin/men', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
+        }).select({ Role: 1});
       } 
     });   
   } catch (error) {
@@ -74,7 +80,10 @@ router.get('/women', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        res.render('admin/women', { title: 'NodeStore Dashboard Categories', username: username, products:products, layout:'adminlayouts.hbs'});
+        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+          if (err) throw err;
+          res.render('admin/women', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
+        }).select({ Role: 1});
       } 
     });   
   } catch (error) {
@@ -93,7 +102,10 @@ router.get('/shoes', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        res.render('admin/shoes', { title: 'NodeStore Dashboard Categories', username: username, products:products, layout:'adminlayouts.hbs'});
+        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+          if(err) throw err;
+          res.render('admin/shoes', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
+        }).select({ Role: 1});
       } 
     });   
   } catch (error) {
@@ -112,7 +124,10 @@ router.get('/phones', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        res.render('admin/phonesandTabs', { title: 'NodeStore Dashboard Categories', username: username, products:products, layout:'adminlayouts.hbs'});
+        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+          if(err) throw err;
+          res.render('admin/phonesandTabs', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
+        }).select({ Role: 1});
       } 
     });   
   } catch (error) {
@@ -131,7 +146,10 @@ router.get('/jewlyry', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        res.render('admin/jewlyry', { title: 'NodeStore Dashboard Categories', username: username, products:products, layout:'adminlayouts.hbs'});
+        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+          if(err) throw err;
+          res.render('admin/jewlyry', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
+        }).select({ Role: 1});
       } 
     });   
   } catch (error) {
