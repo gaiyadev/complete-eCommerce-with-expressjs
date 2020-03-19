@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const config = require('config');
 const db = require('../database/db');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -63,26 +64,28 @@ bcrypt.hash(newAdmin.Password, 10, function(err, hash){
      newAdmin.Password = hash;  //set hash password
      newAdmin.save(callback); //create New Admin
       // Send a mail Register Admin with password and username
-    //   let transporter = nodemailer.createTransport({
-    //     service: 'Gmail',
-    //     auth: {
-    //         user: 'gaiyaobed94@gmail.com',
-    //         pass: 'mypassword'
-    //     }
-    // });
+      let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'your@gmail.com',
+            pass: 'yourpassword'
+        }
+    });
 
-    // let mailOptions = {
-    //     from: 'gaiyaobed94@gmail.com',
-    //     to: newAdmin.email,
-    //     subject: 'NodeStore Administrator',
-    //     text: "You have been Register as an Administrator with the following details details.."
-    //      + "Username:" + newAdmin.Username + " " + "email"  + " " + newAdmin.email
-    // };
+    let mailOptions = {
+        from:'your@gmail.com',
+        to: newAdmin.Email,
+        subject: 'NodeStore Administrator',
+        text: "You have been Register as an Administrator with the following details details.."
+         + "Username:" + " " + newAdmin.Username + " " + " " + "Email"  + " " + newAdmin.Email + "<br/>" +
+         "Please click on the following link, or paste this into your browser to login" + " " +
+           "<a href='http://localhost:3000/access/'>Login</a>"
+    };
 
-    // transporter.sendMail(mailOptions, function(err, info) {
-    //     if(err) throw err;
-    //         console.log("message Sent Successfully!!" + newAdmin.email);
-    // });
+    transporter.sendMail(mailOptions, function(err, info) {
+        if(err) throw err;
+            console.log("message Sent Successfully!!" + newAdmin.Email);
+    });
  });
 }
 
