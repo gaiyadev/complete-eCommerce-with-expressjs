@@ -17,13 +17,15 @@ router.get('/', (req, res, next) => {
 /* GET Dashboard page. */
 router.get('/dashboard', ensureAuthenicated, (req, res, next) => {
   try {
-    let role = Admin.find({ Role: 'Administrator'}, (err, role) => {
+    let id = req.user._id;
+    Admin.findOne({ Role: 'Administrator', _id: id}, (err, role) => {
       if(err) throw err;
       const name = req.user.Username;
       const username = name.toUpperCase();
       res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
       req.session.errors = null;
-    });
+      console.log(role);
+    }).select({ Role: 1});
   } catch (error) {
     console.log(error);
   }
@@ -32,11 +34,15 @@ router.get('/dashboard', ensureAuthenicated, (req, res, next) => {
 
 /* GET Categories page. */
 router.get('/product', ensureAuthenicated, (req, res, next) => {
+ try {
   const id = req.user._id;
   const name = req.user.Username;
   const username = name.toUpperCase();
   res.render('admin/product', { title: 'NodeStore Dashboard Categories', username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
   req.session.errors = null;
+ } catch (error) {
+   console.log(error);
+ }
 });
 
 /* GET Men page. And Fetch from the database */
@@ -131,9 +137,17 @@ router.get('/jewlyry', ensureAuthenicated, async (req, res, next) => {
 
 /* GET Order page. */
 router.get('/order', ensureAuthenicated, (req, res, next) => {
+ try {
   const name = req.user.Username;
   const username = name.toUpperCase();
-  res.render('admin/order', { title: 'NodeStore Dashboard Categories', username: username, layout:'adminlayouts.hbs'});
+  const id = req.user._id;
+  Admin.findOne({Role: 'Administrator', _id: id }, (err, role) => {
+    if(err) throw err;
+    res.render('admin/order', { title: 'NodeStore Dashboard Categories', role: role, username: username, layout:'adminlayouts.hbs'});
+  }).select({ Role: 1});
+ } catch (error) {
+   console.log(error);
+ }
 });
  
 
@@ -147,7 +161,6 @@ router.get('/users', ensureAuthenicated, async (req, res, next) => {
       console.log(err);
     }else {
      res.render('admin/user', { title: 'NodeStore Dashboard Categories', username: username, admins:admins, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     //console.log(admins); 
     } 
   });   
  } catch (error) {
