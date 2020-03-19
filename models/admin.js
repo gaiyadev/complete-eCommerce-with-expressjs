@@ -105,3 +105,23 @@ module.exports.verifyPassword = async (password, hash, callback) => {
 }
 
 
+// Compare Curent password and new password of admin
+module.exports.comparePassword = async (password, hash, callback) => {
+    await bcrypt.compare(password, hash, (err, isMatch) => {
+         if(err) throw err;
+        return callback(null, isMatch);
+     });
+ }
+
+
+ // hashing new password of admin
+// module.exports.hashNewPassword = async (admin, callback) => {
+//     await bcrypt.hash(password, 10, (err, hash) => {
+//          if(err) throw err;
+//          admin.Password = hash;  //set hash password
+//          aAdmin.save(callback);
+//         //return callback(null, hash);
+//      });
+//  }
+
+

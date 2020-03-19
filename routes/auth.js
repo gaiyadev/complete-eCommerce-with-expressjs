@@ -1,4 +1,5 @@
 const multer = require('multer');
+const bcrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const path = require('path');
@@ -124,7 +125,7 @@ router.get('/phones', ensureAuthenicated, async (req, res, next) => {
       if(err){
         console.log(err);
       }else {
-        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+        Admin.findOne({}, (err, role) => {
           if(err) throw err;
           res.render('admin/phonesandTabs', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
         }).select({ Role: 1});
@@ -383,7 +384,13 @@ router.get('/user-profile', ensureAuthenicated, (req, res, next) => {
 
 /* GET User Chnage paswordx page. */
 router.get('/user-change-password', ensureAuthenicated, (req, res, next) => {
-  res.render('admin/user-change-password', { title: 'NodeStore Dashboard Categories', layout:'adminlayouts.hbs'});
+  let id = req.user._id;
+  const name = req.user.Username;
+  const username = name.toUpperCase();
+  Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+    if(err) throw err;
+    res.render('admin/user-change-password', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
+  }).select({Role: 1});
 });
 
 /**
@@ -1086,7 +1093,6 @@ passport.deserializeUser(function(id, done) {
 
 
 
-
 // Updating Admisn Profile
 router.post('/admin/update/:id', async(req, res, next) => {
   try {
@@ -1127,7 +1133,80 @@ router.post('/admin/update/:id', async(req, res, next) => {
       console.log(error);
    }
   });
-   // Ending of code to add new admins
+   // Ending of code to update new admins
   
+
+   // ADmin change password part
+   router.post('/admin/changePassword/', (req, res, next)=> {
+    let current_password = req.body.current_password;
+    let new_password = req.body.new_password;
+    let confirmed_newPassword = req.body.confirmed_newPassword;
+    let id = req.user._id;
+    req.checkBody('current_password', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
+    req.checkBody('new_password', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
+    req.checkBody('new_password', 'password is required').notEmpty().equals(confirmed_newPassword).withMessage('Password confirmation fails');
+
+    //Checking for Errors
+    let errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;     
+          res.location('/access/user-change-password');
+          res.redirect('/access/user-change-password');
+    }else {
+      Admin.findOne({_id: id}, (err, admin) =>{
+        if(err) throw err;
+        if(!admin) {
+          return console.log('unkwn');
+        }
+        Admin.comparePassword(current_password, admin.Password, (err, isMatch) => {
+          if(err) throw err;
+          if(isMatch) {
+            Admin.comparePassword(new_password, admin.Password, (err, isMatch) => {
+              if(err) throw err;
+              if (isMatch) {
+                req.session.message = {
+                  type: 'error',
+                  intro: '',
+                  message: 'New password can not be the same with current password'
+              }
+                  res.location('/access/user-change-password');
+                  res.redirect('/access/user-change-password'); 
+              }
+              if (!isMatch) {
+                bcrypt.hash(new_password, 10, async(err, hash) => {
+                  if(err) throw err;
+                    Admin.update({_id: id}, {
+                    Password: hash
+                },(err) => {
+                  if(err) throw err;
+                  req.session.message = {
+                    type: 'success',
+                    intro: '',
+                    message: 'Password changed successfully'
+                }
+                    res.location('/access/');
+                    res.redirect('/access/');              
+                });
+              });
+                
+              }
+            });          
+          }           
+          if (!isMatch) {
+            req.session.message = {
+              type: 'error',
+              intro: '',
+              message: 'Current password is not correct'
+          }
+              res.location('/access/user-change-password');
+              res.redirect('/access/user-change-password'); 
+          }
+        });
+      });
+    }
+  });
+
+
 
 module.exports = router;
