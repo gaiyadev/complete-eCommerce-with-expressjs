@@ -1216,8 +1216,8 @@ router.post('/admin/update/:id', async(req, res, next) => {
 router.post('/forgot', (req, res, next) => {
   async.waterfall([
     (done) => {
-      crypto.randomBytes(256, (err, buf) => {
-        var token = buf.toString('hex');
+      crypto.randomBytes(20, (err, buf) => {
+        let token = buf.toString('hex');
         done(err, token);
       });
     },
@@ -1241,34 +1241,35 @@ router.post('/forgot', (req, res, next) => {
                 intro: '',
                 message: 'An e-mail has been sent to ' + req.body.email + ' with further instructions.'
             }
-            var smtpTrans = nodemailer.createTransport({
+            let smtpTrans = nodemailer.createTransport({
               service: 'Gmail', 
               auth: {
-               user: 'gaiyadev.ng@gmail.com',
-               pass: '($$gaiya.dev.ng)'
+               user: 'gaiyaobed94@gmail.com',
+               pass: 'gaiya1994'
              }
            });
-           var mailOptions = {
+           let mailOptions = {
             to: req.body.email,
-            from: 'gaiyadev.ng@gmail.com',
-            subject: 'Node.js Password Reset',
+            from: 'gaiyaobed94@gmail.com',
+            subject: 'NodeStore Password Reset',
             text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
               'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-              'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+              'http://' + req.headers.host + '/access/reset/' + token + '\n\n' +
               'If you did not request this, please ignore this email and your password will remain unchanged.\n'
           };
           smtpTrans.sendMail(mailOptions, (err) => {
             if(err) throw err;
+            console.log("message Sent Successfully!!" + req.body.email);
           });
             return res.redirect('/access/');
           });
       });
     },
-    function(token, admin, done) {
-        smtpTrans.sendMail(mailOptions, (err) =>  {
-          if(err) throw err;
-});
-}
+//     function(token, admin, done) {
+//         smtpTrans.sendMail(mailOptions, (err) =>  {
+//           if(err) throw err;
+// });
+// }
   ], (err) => {
     console.log('this err' + ' ' + err)
     res.redirect('/');
@@ -1277,8 +1278,9 @@ router.post('/forgot', (req, res, next) => {
 
 
 //Form to reset password
-router.get('/reset/:token', ensureAuthenicated, (req, res) => {
+router.get('/reset/:token', (req, res, next) => {
   Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin) => {
+    if(err) throw err;
       console.log(admin);
     if (!admin) {
       req.session.message = {
@@ -1288,17 +1290,15 @@ router.get('/reset/:token', ensureAuthenicated, (req, res) => {
     }
       return res.redirect('/access/');
     }
-    res.render('reset', {Admin: req.admin, title: 'Forgot password', layout:'loginLayout.hbs', success: req.session.success, errors: req.session.errors
-  });
-  req.session.errors = null; 
-
+    res.render('admin/reset', { title: 'Forgot password', layout:'loginLayout.hbs', admin: req.admin, success: req.session.success, errors: req.session.errors});
+    req.session.errors = null; 
   });
 });
 
 
 
-
-router.post('/reset/:token', function(req, res) {
+// Logic to reset password for admin
+router.post('/reset/:token', (req, res) => {
   async.waterfall([
     function(done) {
       Admin.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, admin, next) {
@@ -1310,7 +1310,7 @@ router.post('/reset/:token', function(req, res) {
         }
           return res.redirect('/access/');
         }
-        bcrypt.hash(req.body.password, 10,(err, hash) => {
+        bcrypt.hash(req.body.password, 10, (err, hash ) => {
           if(err) throw err;
            resetPassword = hash
            console.log(hash);
@@ -1321,21 +1321,20 @@ router.post('/reset/:token', function(req, res) {
           ResetPasswordExpires: Date.now() // present date
       },(err) => {
         if(err) throw err;
-        var smtpTrans = nodemailer.createTransport({
+        let smtpTrans = nodemailer.createTransport({
           service: 'Gmail',
           auth: {
-            user: 'gaiyadev.ng@gmail.com',
-            pass: '($$gaiya.dev.ng)'
+            user: 'gaiyaobed94@gmail.com',
+            pass: 'gaiya1994'
           }
         });
-        var mailOptions = {
+        let mailOptions = {
           to: admin.email,
-          from: 'gaiyadev.ng@gmail.com',
+          from: 'gaiyaobed94@gmail.com',
           subject: 'Your password has been changed',
           text: 'Hello,\n\n' +
             ' - This is a confirmation that the password for your account ' + admin.email + ' has just been changed.\n'
-        };
-         
+        }; 
       smtpTrans.sendMail(mailOptions, function(err) {
         if(err) throw errr;
         req.session.message = {

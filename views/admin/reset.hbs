@@ -1,17 +1,49 @@
 <div id="loginbox">  
 {{> messages }}
+
             <form id="loginform" class="form-vertical" action="login" method="POST" >
-				 <div class="control-group normal_text"> <h3><img src="../admin/img/logo.png" alt="Logo" /></h3></div>
+				 <div class="control-group normal_text"> <h3>Reset Password</h3></div>
                 <div class="control-group">
                     <div class="controls">
                         <div class="main_input_box">
                             <span class="add-on bg_ly"><i class="icon-lock"></i></span><input type="password" required name="password" placeholder="Password" />
                         </div>
                     </div>
-                </div>
+                </div><br/>
                 <div class="form-actions">
-                    <span class="pull-right"><button type="submit" class="btn btn-success" /> Login</button></span>
+                    <span class="pull-right"><button type="submit" class="btn btn-success btn-block" /> Reset Password</button></span>
                 </div>
             </form>
         </div>
-        
+        <style>
+            h3 {
+                margin-top: 100px;
+                color: white;
+                font-size: 26px;
+            }
+            #loginbox {
+                width: 600px;
+                margin: auto;
+            }
+            input[type='password'] {
+                width: 400px;
+                height: 40px;
+                border-radius: 5px;
+                outline: none;
+                border: none;
+                padding: 10px 12px;
+                box-sizing: border-box;
+            }
+            body {
+                  background-color:gray;
+
+            }
+            .btn {
+                background-color: goldenrod;
+                width: 200px;
+                height: 35px;
+                border-radius: 3px;
+                outline: none;
+                border: none;
+            }
+        </style>

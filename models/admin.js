@@ -50,7 +50,6 @@ const AdminSchema = new mongoose.Schema ({
     },
     ResetPasswordToken: {
         type: String,
-        default: "tokenhere"
     },
     ResetPasswordExpires: {
         type: Date,
@@ -58,7 +57,6 @@ const AdminSchema = new mongoose.Schema ({
     },
     CreatedAt: {
         type: Date,
-        default: Date.now
     }   
 });
 
@@ -75,13 +73,13 @@ bcrypt.hash(newAdmin.Password, 10, function(err, hash){
       let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'your@gmail.com',
-            pass: 'yourpassword'
+            user: 'gaiyaobed94@gmail.com',
+            pass: 'gaiya1994'
         }
     });
 
     let mailOptions = {
-        from:'your@gmail.com',
+        from:'gaiyaobed94@gmail.com',
         to: newAdmin.Email,
         subject: 'NodeStore Administrator',
         text: "You have been Register as an Administrator with the following details details.."
