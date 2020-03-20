@@ -48,6 +48,14 @@ const AdminSchema = new mongoose.Schema ({
         minlength: 8,
         maxlength: 150,
     },
+    ResetPasswordToken: {
+        type: String,
+        default: "tokenhere"
+    },
+    ResetPasswordExpires: {
+        type: Date,
+        default: '2020-03-19T23:12:20.845+00:00'
+    },
     CreatedAt: {
         type: Date,
         default: Date.now
