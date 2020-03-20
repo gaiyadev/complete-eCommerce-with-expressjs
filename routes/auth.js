@@ -1212,7 +1212,6 @@ router.post('/admin/update/:id', async(req, res, next) => {
   });
 
 // FORGOT PASSWORD FOR ADMIN
-
 router.post('/forgot', (req, res, next) => {
   async.waterfall([
     (done) => {
@@ -1231,7 +1230,7 @@ router.post('/forgot', (req, res, next) => {
         }
           return res.redirect('/access/');
         }
-            Admin.update({Email: req.body.email}, {
+            Admin.update({ Email: req.body.email }, {
                 ResetPasswordToken: token,
                 ResetPasswordExpires: Date.now() + 3600000 // 1 hour
             },(err) => {
@@ -1278,8 +1277,8 @@ router.post('/forgot', (req, res, next) => {
 
 
 //Form to reset password
-router.get('/reset/:token', (req, res, next) => {
-  Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin) => {
+router.get('/reset/:token', async(req, res, next) => {
+  await Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin) => {
     if(err) throw err;
       console.log(admin);
     if (!admin) {
@@ -1292,6 +1291,8 @@ router.get('/reset/:token', (req, res, next) => {
     }
     res.render('admin/reset', { title: 'Forgot password', layout:'loginLayout.hbs', admin: req.admin, success: req.session.success, errors: req.session.errors});
     req.session.errors = null; 
+    console.log('seen'+ admin);
+
   });
 });
 
@@ -1301,7 +1302,7 @@ router.get('/reset/:token', (req, res, next) => {
 router.post('/reset/:token', (req, res) => {
   async.waterfall([
     function(done) {
-      Admin.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, admin, next) {
+      Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, function(err, admin, next) {
         if (!admin) {
           req.session.message = {
             type: 'error',
@@ -1310,15 +1311,31 @@ router.post('/reset/:token', (req, res) => {
         }
           return res.redirect('/access/');
         }
-        bcrypt.hash(req.body.password, 10, (err, hash ) => {
+        (req, res, done) => {
+          let Cpassword = req.body.Cpassword;
+          req.checkBody('password', 'This field is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
+          req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
+          req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
+          
+          let errors = req.validationErrors();
+          if (errors) {
+              req.session.errors = errors;
+              req.session.success = false;     
+                return res.redirect('/access/reset');
+          }
+         bcrypt.hash(req.body.password, 10, (err, hash ) => {
           if(err) throw err;
-           resetPassword = hash
+         let  resetPassword = hash
            console.log(hash);
+           done(err, resetPassword);
         });
-        Admin.update({resetPasswordToken: req.params.token}, {
+      },
+       
+        Admin.update({ resetPasswordToken: req.params.token }, {
           Password: resetPassword,
-          ResetPasswordToken: "token",
-          ResetPasswordExpires: Date.now() // present date
+          ResetPasswordToken: "",
+          PasswordUpdateAt: Date.now(),
+          ResetPasswordExpires: "" // empty
       },(err) => {
         if(err) throw err;
         let smtpTrans = nodemailer.createTransport({
@@ -1338,9 +1355,9 @@ router.post('/reset/:token', (req, res) => {
       smtpTrans.sendMail(mailOptions, function(err) {
         if(err) throw errr;
         req.session.message = {
-          type: 'error',
+          type: 'success',
           intro: '',
-          message: 'Password reset token is invalid or has expired.'
+          message: 'Password reset successfully.'
       }
         return res.redirect('/access/');
       });

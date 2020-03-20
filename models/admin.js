@@ -53,7 +53,9 @@ const AdminSchema = new mongoose.Schema ({
     },
     ResetPasswordExpires: {
         type: Date,
-        default: '2020-03-19T23:12:20.845+00:00'
+    },
+    PasswordUpdateAt: {
+        type: Date,
     },
     CreatedAt: {
         type: Date,
