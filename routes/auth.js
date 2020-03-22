@@ -1361,4 +1361,9 @@ router.post('/reset/:token', (req, res, next) => {
 });
 
 
+router.get('*', (req, res) =>{
+  res.render('admin/error404', { title: 'Page not found', layout: false, });
+
+});
+
 module.exports = router;
