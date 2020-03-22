@@ -126,13 +126,13 @@ module.exports.comparePassword = async (password, hash, callback) => {
 
 
  // hashing new password of admin
-// module.exports.hashNewPassword = async (admin, callback) => {
-//     await bcrypt.hash(password, 10, (err, hash) => {
-//          if(err) throw err;
-//          admin.Password = hash;  //set hash password
-//          aAdmin.save(callback);
-//         //return callback(null, hash);
-//      });
-//  }
+module.exports.hashNewPassword = async (admin, callback) => {
+    await bcrypt.hash(password, 10, (err, hash) => {
+         if(err) throw err;
+         admin.Password = hash;  //set hash password
+         aAdmin.save(callback);
+        return callback(null, hash);
+     });
+ }
 
 

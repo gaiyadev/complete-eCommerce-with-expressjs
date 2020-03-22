@@ -1161,7 +1161,7 @@ router.post('/admin/update/:id', async(req, res, next) => {
       Admin.findOne({_id: id}, (err, admin) =>{
         if(err) throw err;
         if(!admin) {
-          return console.log('unkwn');
+          return console.log('unknown Admin');
         }
         Admin.comparePassword(current_password, admin.Password, (err, isMatch) => {
           if(err) throw err;
@@ -1289,53 +1289,45 @@ router.get('/reset/:token', async(req, res, next) => {
     }
       return res.redirect('/access/');
     }
-    res.render('admin/reset', { title: 'Forgot password', layout:'loginLayout.hbs', admin: req.admin, success: req.session.success, errors: req.session.errors});
+   let token = req.params.token;
+    res.render('admin/reset', { title: 'Forgot password', layout:'loginLayout.hbs', token: token,  admin: req.admin, success: req.session.success, errors: req.session.errors});
     req.session.errors = null; 
-    console.log('seen'+ admin);
-
   });
 });
 
 
 
 // Logic to reset password for admin
-router.post('/reset/:token', (req, res) => {
-  async.waterfall([
-    function(done) {
-      Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, function(err, admin, next) {
-        if (!admin) {
-          req.session.message = {
-            type: 'error',
-            intro: '',
-            message: 'Password reset token is invalid or has expired.'
-        }
-          return res.redirect('/access/');
-        }
-        (req, res, done) => {
-          let Cpassword = req.body.Cpassword;
-          req.checkBody('password', 'This field is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
-          req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
-          req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
-          
-          let errors = req.validationErrors();
-          if (errors) {
-              req.session.errors = errors;
-              req.session.success = false;     
-                return res.redirect('/access/reset');
-          }
-         bcrypt.hash(req.body.password, 10, (err, hash ) => {
-          if(err) throw err;
-         let  resetPassword = hash
-           console.log(hash);
-           done(err, resetPassword);
-        });
-      },
-       
-        Admin.update({ resetPasswordToken: req.params.token }, {
-          Password: resetPassword,
-          ResetPasswordToken: "",
+router.post('/reset/:token', (req, res, next) => {
+     let password = req.body.password;
+    let Cpassword = req.body.Cpassword;
+    let token = req.params.token;
+    req.checkBody('password', 'This field is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
+    req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
+    req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
+    let errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;     
+        return res.redirect(`/access/reset/${token}`);
+    } else {
+      Admin.findOne({ ResetPasswordToken: token, ResetPasswordExpires: { $gt: Date.now() } }, function(err, admin, next) {
+      if (err) throw err;
+      if(!admin) {
+        req.session.message = {
+          type: 'error',
+          intro: '',
+          message: 'Password reset token is invalid or has expired.'
+      }
+           return   res.redirect('/access/');
+      }
+      // if exist
+      bcrypt.hash(password, 10, (err, hash)=> {
+        if (err) throw err;
+       console.log('this is the has' + hash);
+        Admin.update({ ResetPasswordToken: token }, {
+          Password: hash,
           PasswordUpdateAt: Date.now(),
-          ResetPasswordExpires: "" // empty
       },(err) => {
         if(err) throw err;
         let smtpTrans = nodemailer.createTransport({
@@ -1346,14 +1338,14 @@ router.post('/reset/:token', (req, res) => {
           }
         });
         let mailOptions = {
-          to: admin.email,
+          to: admin.Email,
           from: 'gaiyaobed94@gmail.com',
           subject: 'Your password has been changed',
           text: 'Hello,\n\n' +
-            ' - This is a confirmation that the password for your account ' + admin.email + ' has just been changed.\n'
+            ' - This is a confirmation that the password for your account ' + admin.Email + ' has just been changed.\n'
         }; 
       smtpTrans.sendMail(mailOptions, function(err) {
-        if(err) throw errr;
+        if(err) throw err;
         req.session.message = {
           type: 'success',
           intro: '',
@@ -1362,11 +1354,10 @@ router.post('/reset/:token', (req, res) => {
         return res.redirect('/access/');
       });
     });
-   });
-    },
-  ], function(err) {
-    res.redirect('/acccess');
-  });
+      });
+      
+      });
+    } 
 });
 
 
