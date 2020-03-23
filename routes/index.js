@@ -13,7 +13,7 @@ router.get('/', async(req, res, next) => {
         if(err) throw err;
         res.render('pages/index', { title: 'Welcome to NodeStore', product: product, products: products });
       }).sort({AuthorCreated: -1}).limit(20);
-    });
+    }).limit(8);
   } catch (err) {
     console.log(err);
   }
@@ -98,7 +98,13 @@ router.get('/product/:id', async(req, res, next) => {
       if(err) throw err;
      await Product.find({}, async (err, products) => {
         if(err) throw err;
-        res.render('pages/product', { title: 'Product page', product: product, products: products });
+        Review.find({ProductReview: Id}, (err, review) => {
+          if(err) throw err;
+          Review.find({ProductReview: Id}, (err, count) => {
+            if(err) throw err;
+            res.render('pages/product', { title: 'Product page', count: count, product: product, products: products, review: review });
+          }).sort({CreatedAt: -1});
+        });
       });
     });
   } catch (err) {
@@ -121,18 +127,20 @@ router.get('/cart', (req, res, next) => {
 
 //  Viewing product Page
 router.post('/cart/add/:id', (req, res, next) => {
-  let id = req.params.id;
+ let id = req.params.id;
 console.log('cart is sen' + id);
 });
 
-router.post('/reviews', (req, res, next) => {
+router.post('/reviews/:id', (req, res, next) => {
   try {
     let name = req.body.name;
     let review = req.body.review;
+    let id = req.params.id;
      //Creating new Review
      let newReview = new Review({
       Name: name,
-      Review: review,      
+      Review: review,
+      ProductReview: id      
   });
   Review.createReview (newReview, function (err, review) {
     if (err) throw err;

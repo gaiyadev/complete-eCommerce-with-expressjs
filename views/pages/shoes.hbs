@@ -139,8 +139,9 @@
 								<div class="pi-pic">
 									<img src="/../uploads/{{ _doc.ProductImage }}" alt="">
 									<div class="pi-links">
-									<a href="#" class="add-card"><i class="flaticon-bag"></i><span>ADD TO CART</span></a>
-							      	<a href=" {{_doc._id }} " class="wishlist-btn"><i class="flaticon-heart"></i></a>
+								<form action="/cart/add/{{ _doc._id }}" method="post">
+									<button style="float: left;" type="submit" class="add-card btn-primary"><i class="flaticon-bag"></i><span>Add TO Cart</span></button>
+								</form>								      	<a href=" {{_doc._id }} " class="wishlist-btn"><i class="flaticon-heart"></i></a>
 								  <a href="/product/{{ _doc._id}} " class="wishlist-btn"><i class="flaticon-visible"></i></a>
 									</div>
 								</div>

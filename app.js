@@ -35,6 +35,10 @@ app.engine( 'hbs', hbs( {
     increment: function(index) {
       index++;
       return index;
+    },
+    count: function(index) {
+      index++;
+      return index;
     }
 }
 }));
