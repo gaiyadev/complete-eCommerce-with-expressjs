@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Review = require('../models/review');
 var express = require('express');
 var router = express.Router();
 
@@ -90,11 +91,15 @@ router.get('/contact', (req, res, next) => {
 
 
 //  Product Page
-router.get('/product', (req, res, next) => {
+router.get('/product/:id', async(req, res, next) => {
   try {
-    Product.find({}, (err, product) => {
+    let Id = req.params.id;
+   await Product.find({_id: Id }, async(err, product) => {
       if(err) throw err;
-      res.render('pages/product', { title: 'Product page', product: product });
+     await Product.find({}, async (err, products) => {
+        if(err) throw err;
+        res.render('pages/product', { title: 'Product page', product: product, products: products });
+      });
     });
   } catch (err) {
     console.log(err);
@@ -111,6 +116,36 @@ router.get('/checkout', (req, res, next) => {
 //  cart Page
 router.get('/cart', (req, res, next) => {
   res.render('pages/cart', { title: 'Cart page' });
+});
+
+
+//  Viewing product Page
+router.post('/cart/add/:id', (req, res, next) => {
+  let id = req.params.id;
+console.log('cart is sen' + id);
+});
+
+router.post('/reviews', (req, res, next) => {
+  try {
+    let name = req.body.name;
+    let review = req.body.review;
+     //Creating new Review
+     let newReview = new Review({
+      Name: name,
+      Review: review,      
+  });
+  Review.createReview (newReview, function (err, review) {
+    if (err) throw err;
+    req.session.message = {
+      type: 'success',
+      intro: '',
+      message: 'Review added successfully'
+      }
+      return  res.redirect('back');
+  });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

@@ -1,6 +1,5 @@
 
-$(document).on('click', '#edit-user', function() {
-     
+$(document).on('click', '#edit-user', function() {     
      let id = $(this).attr('data-id');
      let first_name = $(this).attr('data-firstName');
      let last_name = $(this).attr('data-lastName');
@@ -13,5 +12,4 @@ $(document).on('click', '#edit-user', function() {
      $('#username').val(username);
      $('#useremail').val(email);role
      $('#role').val(email);
-
 })
