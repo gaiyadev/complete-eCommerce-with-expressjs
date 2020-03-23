@@ -4,11 +4,14 @@ var router = express.Router();
 
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/', async(req, res, next) => {
   try {
-    Product.find({}, (err, product) => {
+    await Product.find({}, (err, product) => {
       if(err) throw err;
-      res.render('pages/index', { title: 'Welcome to NodeStore', product: product });
+      Product.find({ProductCategory: 'Women Fashion'}, (err, products) => {
+        if(err) throw err;
+        res.render('pages/index', { title: 'Welcome to NodeStore', product: product, products: products });
+      }).sort({AuthorCreated: -1}).limit(20);
     });
   } catch (err) {
     console.log(err);
@@ -42,7 +45,14 @@ router.get('/men', (req, res, next) => {
 
 // Men Phone and Tablets Page
 router.get('/phoneandTablets', (req, res, next) => {
-  res.render('pages/phoneandTablets', { title: 'Phone and Tablets Section' });
+  try {
+    Product.find({ProductCategory: 'Phones and  Tablets'}, (err, product) => {
+      if (err) throw err;
+      res.render('pages/phoneandTablets', { title: 'Phone and Tablets Section', product: product });
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Men Jewelry Page
@@ -50,7 +60,7 @@ router.get('/jewelry', (req, res, next) => {
   try {
     Product.find({ProductCategory: 'Jewlyries'}, (err, product) => {
       if(err) throw err;
-      res.render('pages/jewelry', { title: 'Jewelry Section', product: this.product });
+      res.render('pages/jewelry', { title: 'Jewelry Section', product: product });
     });
   } catch (err) {
     console.log(err);
