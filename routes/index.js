@@ -103,7 +103,7 @@ router.get('/product/:id', async(req, res, next) => {
           Review.find({ProductReview: Id}, (err, count) => {
             if(err) throw err;
             res.render('pages/product', { title: 'Product page', count: count, product: product, products: products, review: review });
-          }).sort({CreatedAt: -1});
+          }).sort({CreatedAt: 1}).count();
         });
       });
     });
@@ -155,5 +155,26 @@ router.post('/reviews/:id', (req, res, next) => {
     console.log(err);
   }
 });
+
+
+
+router.get('/login', (req, res, next) => {
+res.render('pages/login', {title: 'Login User'} );
+});
+
+router.get('/signup', (req, res, next) => {
+  res.render('pages/signup', {title: 'Create an Account'});
+});
+
+router.post('/login', (req, res, next)  => {
+  console.log('login');
+});
+
+router.post('/signup', (req, res, next)  => {
+  console.log('signup');
+});
+
+
+
 
 module.exports = router;

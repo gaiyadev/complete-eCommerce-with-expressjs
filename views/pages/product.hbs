@@ -32,7 +32,7 @@
 						<i class="fa fa-star-o"></i>
 						<i class="fa fa-star-o fa-fade"></i>
 					</div>
-					<div class="p-review"><a data-id=" {{_doc._id }} " href=" {{ _doc._id }} " data-toggle="modal" data-target="#review">Add your review</a>
+					<div class="p-review"><a class="btn btn-danger text-white" href=" {{_doc._id }}" data-toggle="modal" data-target="#review">Add your review</a>
 					</div>
 					<div class="fw-size-choose">
 						<p>Size</p>
@@ -81,14 +81,13 @@
 							</div>
 						</div>
 					{{/each}}
-
 						<div class="panel">
 							<div class="panel-header" id="headingTwo">
 								<button class="panel-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">care details </button>
 							</div>
 							<div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
 								<div class="panel-body">
-									<img src="./img/cards.png" alt="">
+									<img src="../img/cards.png" alt="">
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pharetra tempor so dales. Phasellus sagittis auctor gravida. Integer bibendum sodales arcu id te mpus. Ut consectetur lacus leo, non scelerisque nulla euismod nec.</p>
 								</div>
 							</div>

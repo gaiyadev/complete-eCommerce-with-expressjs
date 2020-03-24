@@ -1,15 +1,15 @@
  {{# if errors }}
              {{# each errors }}
-                <p class="alert alert-danger">{{ this.msg }}</p>
+                <p class="alert alert-danger animated bounce">{{ this.msg }}</p>
            {{/each}}
                 {{else}}
                   {{# if success}}
-                      <p id="alert" class="alert alert-success">New Admin Registered successfully</p>
+                      <p id="alert" class="alert alert-success animated bounce">New Admin Registered successfully</p>
                   {{/if}}
             {{/if}}
 
              {{# if message }}
-                     <div class="alert alert-{{message.type}}">
+                     <div class="alert alert-{{message.type}} animated bounce">
                   <p id="alert"><strong>{{ message.intro }}</strong> {{message.message}}</p> 
                      </div>
 
@@ -20,7 +20,12 @@
   #alert {
     color: #000;
   }
+   .alert .animated{
+        animation-duration: 8.4s;
+    }
 </style>
+
+
 <script>
-$(".alert").fadeOut(8000 );
+$(".alert").fadeOut(8000);
 </script>
