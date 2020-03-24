@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const config = require('config');
@@ -87,7 +88,7 @@ router.post('/login', (req,  res, next) => {
             res.redirect('back'); 
         }else  {
           // success login ... Generating jwt for auth
-         let token  = jwt.sign({_id: user._id}, 'jwtPrivateKey',);
+         let token  = jwt.sign({_id: user._id}, process.env.APP_SECRET_KEY);
           console.log(token);
           res.header('x-auth-token', token);
           res.redirect('/users/home'); 
