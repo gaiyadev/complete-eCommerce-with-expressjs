@@ -4,15 +4,17 @@
 			<div class="row">
                  <div class="col-lg-2"></div>
 				<div class="col-lg-8 contact-info">
-                    <h3 class="text-danger">Create An Account &nbsp; <span class="text-success">Already have an account? &nbsp;<a href="/login">Login</a> </span></h3>
-					<form action="/signup" method="POST" class="contact-form">
+                    {{> messages}}
+                    <h3 class="text-danger">Create An Account &nbsp; <span class="text-success">Already have an account? &nbsp;<a href="/users/login">Login</a> </span></h3>
+					<form action="/users/signup" method="POST" class="contact-form">
 						<input type="text" placeholder="Surname" required name="surname">
                         <input type="text" placeholder="Other Names" required name="otherName">
                          <input type="tel" placeholder="Mobile Number" required name="phone">
                           <input type="text" placeholder="Zip Code" required name="code">
 						<input type="text" required name="lga" placeholder="Local Government Area">
-                        <input type="email" placeholder="Your e-mail">
-                        <select required name="country">
+                        <input type="email" name="email" placeholder="Your e-mail">
+                         <input type="text" name="username" placeholder="Your Username">
+                        <select required name="state">
                             <option value="" >::State</option>
                             <option value="Kaduna" >Kaduna</option>
                             <option value="Katsina">Katsina</option>

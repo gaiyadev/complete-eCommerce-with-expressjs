@@ -158,22 +158,6 @@ router.post('/reviews/:id', (req, res, next) => {
 
 
 
-router.get('/login', (req, res, next) => {
-res.render('pages/login', {title: 'Login User'} );
-});
-
-router.get('/signup', (req, res, next) => {
-  res.render('pages/signup', {title: 'Create an Account'});
-});
-
-router.post('/login', (req, res, next)  => {
-  console.log('login');
-});
-
-router.post('/signup', (req, res, next)  => {
-  console.log('signup');
-});
-
 
 
 
