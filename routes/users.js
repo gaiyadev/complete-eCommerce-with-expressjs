@@ -1,3 +1,8 @@
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+//const nodemailer = require('nodemailer');
 const User = require('../models/user');
 var express = require('express');
 var router = express.Router();
@@ -9,6 +14,13 @@ router.get('/login', (req, res, next) => {
   req.session.errors = null;
   
   });
+
+  // getting users home
+  router.get('/home', (req, res, next) => {
+  res.render('pages/home', {title: 'User Dashboard', layout: 'userLayout', success: req.session.success, errors: req.session.errors} );
+  req.session.errors = null;
+  });
+
   //..getting users signup form
   router.get('/signup', (req, res, next) => {
     res.render('pages/signup', {title: 'Create an Account', success: req.session.success, errors: req.session.errors});
@@ -16,11 +28,62 @@ router.get('/login', (req, res, next) => {
   
   });
 
-  //posting  user login
-router.post('/login', (req, res, next)  => {
-  console.log('login');
+
+router.post('/login', (req,  res, next) => {
+  let email = req.body.email;
+  let password = req.body.password; 
+  req.checkBody('email', 'email  is required').isEmail();
+  req.checkBody('password', 'password is required').notEmpty();
+
+  let errors = req.validationErrors();
+  if (errors) {
+      req.session.errors = errors;
+     req.session.success = false;
+        res.redirect('back');
+}else {
+  req.session.success = true;
+  User.findOne({ Email: email }, (err, user) => {
+    if (!user) {
+           req.session.message = {
+            type: 'danger',
+            intro: '',
+            message: 'This email is not associated to any account'
+        },
+           res.location('back');
+           res.redirect('back');
+    }else {
+      User.comparePassword(password, user.Password, (err, isMatch) => {
+        if(err) throw err;
+        if (!isMatch) {
+          req.session.message = {
+            type: 'danger',
+            intro: '',
+            message: 'Invalid user password'
+        }
+            res.location('back');
+            res.redirect('back'); 
+        }else  {
+          // success login
+          res.redirect('/users/home'); 
+        }
+  
+      }); 
+
+
+    }
 });
 
+}
+
+
+
+});
+
+
+
+
+
+ 
 //posting users signup
 router.post('/signup', (req, res, next)  => {
   try {

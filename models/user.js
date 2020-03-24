@@ -26,7 +26,6 @@ const UserSchema = new mongoose.Schema ({
         unique: true,
         minlength: 4,
         maxlength: 50,
-        lowercase: true
     },
     Phone: {
         type: String,
@@ -116,16 +115,16 @@ bcrypt.hash(newUser.Password, 10, function(err, hash){
 }
 
 
-// Get Admin by Id
-module.exports.getAdminById = async (id, callback) => {
+// Get User by Id
+module.exports.getUserById = async (id, callback) => {
   try {
-    await  Admin.findById(id, callback);
+    await  User.findById(id, callback);
   } catch (error) {
       console.log(error);      
   }
 }
 
-// Compare Admin password
+// Compare User password
 module.exports.verifyPassword = async (password, hash, callback) => {
    await bcrypt.compare(password, hash, (err, isMatch) => {
         if(err) throw err;
@@ -144,13 +143,13 @@ module.exports.comparePassword = async (password, hash, callback) => {
 
 
  // hashing new password of admin
-module.exports.hashNewPassword = async (admin, callback) => {
-    await bcrypt.hash(password, 10, (err, hash) => {
-         if(err) throw err;
-         admin.Password = hash;  //set hash password
-         aAdmin.save(callback);
-        return callback(null, hash);
-     });
- }
+// module.exports.hashNewPassword = async (admin, callback) => {
+//     await bcrypt.hash(password, 10, (err, hash) => {
+//          if(err) throw err;
+//          admin.Password = hash;  //set hash password
+//          aAdmin.save(callback);
+//         return callback(null, hash);
+//      });
+//  }
 
 

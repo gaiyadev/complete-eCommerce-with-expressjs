@@ -525,7 +525,8 @@ try {
           Email: user_email,
           Username: username,
           Role: user_role,
-          Password: password
+          Password: password,
+          CreatedAt: Date.now()
       });
       Admin.createAdmin (newAdmin, function (err, admin) {
         if (err) throw err;
