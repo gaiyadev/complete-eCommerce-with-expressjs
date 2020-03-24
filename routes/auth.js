@@ -1,3 +1,4 @@
+ require('dotenv').config();
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const config = require('config');
@@ -1244,13 +1245,13 @@ router.post('/forgot', (req, res, next) => {
             let smtpTrans = nodemailer.createTransport({
               service: 'Gmail', 
               auth: {
-               user: 'gaiyaobed94@gmail.com',
-               pass: 'gaiya1994'
+               user: process.env.APP_EMAIL,
+               pass: process.env.APP_PASSWORD,
              }
            });
            let mailOptions = {
             to: req.body.email,
-            from: 'gaiyaobed94@gmail.com',
+            from: process.env.APP_EMAIL,
             subject: 'NodeStore Password Reset',
             text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
               'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -1334,13 +1335,13 @@ try {
       let smtpTrans = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-          user: 'gaiyaobed94@gmail.com',
-          pass: 'gaiya1994'
+          user: process.env.APP_EMAIL,
+          pass: process.env.APP_PASSWORD
         }
       });
       let mailOptions = {
         to: admin.Email,
-        from: 'gaiyaobed94@gmail.com',
+        from: process.env.APP_EMAIL,
         subject: 'Your password has been changed',
         text: 'Hello,\n\n' +
           ' - This is a confirmation that the password for your account ' + admin.Email + ' has just been changed.\n'

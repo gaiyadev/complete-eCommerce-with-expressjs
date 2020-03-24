@@ -1,8 +1,18 @@
-// Route Middleware
-module.exports.ensureAuthenicated = function (req, res, next) {  
-    if (req.isAuthenticated()) {
-        return next(); 
-      }
-        res.redirect('/access/');
-  }
-  
+const jwt = require('jsonwebtoken');
+
+
+ module.exports = function(req, res, next) {
+    const token = req.header('x-auth-token');
+    if(!token) {
+      console.log('sssssssssssss');
+      return res.redirect('/users/login');
+    }
+try {
+  const decoded =  jwt.verify(token, 'jwtPrivateKey');
+  req.user = decoded;
+  next();
+} catch (err) {
+  console.log('invalid token');  
+}    
+ }
+

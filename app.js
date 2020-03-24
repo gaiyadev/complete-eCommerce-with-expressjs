@@ -1,4 +1,5 @@
 const moment = require('moment');
+const config = require('config');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const ExpressSession = require('express-session');
@@ -19,8 +20,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/auth');
 
-
 var app = express();
+
 
 // Template engine
 app.engine( 'hbs', hbs( {

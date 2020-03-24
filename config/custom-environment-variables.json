@@ -1,12 +1,6 @@
 {
     
-"Administrator": {
-    "emailConfig": {
-        "Host": "Gmail",
-        "Email": "gaiydev.ng@gmail.com",
-        "Password": "($$gaiya.dev.ng)"
-    }
+    "jwtPrivateKey": "NodeStore_jwtPrivateKey"
 
 }
 
-}

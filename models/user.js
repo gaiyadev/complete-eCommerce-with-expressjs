@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const config = require('config');
 const db = require('../database/db');
@@ -92,13 +93,13 @@ bcrypt.hash(newUser.Password, 10, function(err, hash){
       let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'gaiyaobed94@gmail.com',
-            pass: 'gaiya1994'
+            user: process.env.APP_EMAIL,
+            pass: process.env.APP_PASSWORD,
         }
     });
 
     let mailOptions = {
-        from:'gaiyaobed94@gmail.com',
+        from: process.env.APP_EMAIL,
         to: newUser.Email,
         subject: 'NodeStore Administrator',
         text: "You have been Register as an Administrator with the following details details.."
@@ -140,6 +141,7 @@ module.exports.comparePassword = async (password, hash, callback) => {
         return callback(null, isMatch);
      });
  }
+
 
 
  // hashing new password of admin

@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const config = require('config');
+const auth = require('../middleware/routesMiddleware');
+const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 //const nodemailer = require('nodemailer');
@@ -7,7 +10,11 @@ const User = require('../models/user');
 var express = require('express');
 var router = express.Router();
 
-
+// if (!config.get('jwtPrivateKey')) {
+//   console.error('FATAL ERROR: jwtPrivateKey is not defined');
+//   process.exit(1);
+  
+// }
 // getting users login form
 router.get('/login', (req, res, next) => {
   res.render('pages/login', {title: 'Login User', success: req.session.success, errors: req.session.errors} );
@@ -15,8 +22,21 @@ router.get('/login', (req, res, next) => {
   
   });
 
+  router.get('/update', (req, res, next) => {
+    res.render('pages/update', {title: 'Update Profile', layout: 'userLayout', success: req.session.success, errors: req.session.errors} );
+    req.session.errors = null;
+    
+    });
+
+    router.get('/change', auth, (req, res, next) => {
+      res.render('pages/change-password', {title: 'Change Password', layout: 'userLayout', success: req.session.success, errors: req.session.errors} );
+      req.session.errors = null;
+      
+      });
+    
+  
   // getting users home
-  router.get('/home', (req, res, next) => {
+  router.get('/home', auth, (req, res, next) => {
   res.render('pages/home', {title: 'User Dashboard', layout: 'userLayout', success: req.session.success, errors: req.session.errors} );
   req.session.errors = null;
   });
@@ -28,7 +48,10 @@ router.get('/login', (req, res, next) => {
   
   });
 
-
+  //logging out
+router.post('/logout', (req, res) => {
+console.log('ss');
+});
 router.post('/login', (req,  res, next) => {
   let email = req.body.email;
   let password = req.body.password; 
@@ -63,7 +86,10 @@ router.post('/login', (req,  res, next) => {
             res.location('back');
             res.redirect('back'); 
         }else  {
-          // success login
+          // success login ... Generating jwt for auth
+         let token  = jwt.sign({_id: user._id}, 'jwtPrivateKey',);
+          console.log(token);
+          res.header('x-auth-token', token);
           res.redirect('/users/home'); 
         }
   
