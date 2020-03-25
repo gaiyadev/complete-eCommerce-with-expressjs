@@ -1,4 +1,5 @@
  require('dotenv').config();
+ var csrf = require('csurf')
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const config = require('config');
@@ -12,23 +13,24 @@ const fs = require('fs');
 const Admin = require('../models/admin');
 const Product = require('../models/product');
 var express = require('express');
+var csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
 /* Admin login page. */
-router.get('/', (req, res, next) => {
-  res.render('admin/login', { title: 'Admin Login', layout:'loginLayout.hbs', success: req.session.success, errors: req.session.errors});
+router.get('/', csrfProtection, (req, res, next) => {
+  res.render('admin/login', { title: 'Admin Login', layout:'loginLayout.hbs', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors});
   req.session.errors = null;
 });
 
 /* GET Dashboard page. */
-router.get('/dashboard', ensureAuthenicated, (req, res, next) => {
+router.get('/dashboard', ensureAuthenicated, csrfProtection, (req, res, next) => {
   try {
     let id = req.user._id;
     Admin.findOne({ Role: 'Administrator', _id: id}, (err, role) => {
       if(err) throw err;
       const name = req.user.Username;
       const username = name.toUpperCase();
-      res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
+      res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors});
       req.session.errors = null;
      // console.log(role);
     }).select({ Role: 1});
@@ -1282,7 +1284,7 @@ router.post('/forgot', (req, res, next) => {
 router.get('/reset/:token', async(req, res, next) => {
   await Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin) => {
     if(err) throw err;
-      console.log(admin);
+//      console.log(admin);
     if (!admin) {
       req.session.message = {
         type: 'error',
@@ -1326,7 +1328,7 @@ try {
     // if admin exist
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) throw err;
-     console.log('this is the has' + hash);
+    // console.log('this is the has' + hash);
       Admin.update({ ResetPasswordToken: token }, {
         Password: hash,
         PasswordUpdateAt: Date.now(),

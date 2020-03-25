@@ -7,6 +7,7 @@
 				<div class="col-lg-8 contact-info">
                     <h3 class="text-danger">Login</h3>
 					<form action="/users/login" method="POST" class="contact-form">
+					  <input type="hidden" name="_csrf" value="{{csrfToken}}">
 						<input type="email" autofocus required placeholder="Your e-mail" name="email">
 						<input type="password" required placeholder="Password" name="password"><br/><br/>
 						<button type="submit" name="submit" class="site-btn">Login</button>

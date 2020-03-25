@@ -7,6 +7,7 @@
                     {{> messages}}
                     <h3 class="text-danger">Create An Account &nbsp; <span class="text-success">Already have an account? &nbsp;<a href="/users/login">Login</a> </span></h3>
 					<form action="/users/signup" method="POST" class="contact-form">
+                     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 						<input type="text" placeholder="Surname" required name="surname">
                         <input type="text" placeholder="Other Names" required name="otherName">
                          <input type="tel" placeholder="Mobile Number" required name="phone">
@@ -56,7 +57,6 @@
                         </select><br/><br/>
                         <input type="password" required placeholder="Password" name="password">
                         <input type="password" required placeholder="Confirm Password" name="Cpassword">
-
 						<textarea name="address" required placeholder="Address"></textarea>
                         <textarea name="billAddress"  required placeholder="Billing  Address"></textarea>
 						<button type="submit" class="site-btn">Register</button>
