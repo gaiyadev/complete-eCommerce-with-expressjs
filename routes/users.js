@@ -5,48 +5,59 @@ const crypto = require('crypto');
 const config = require('config');
 //const auth = require('../middleware/routesMiddleware');
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-//const nodemailer = require('nodemailer');
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+const nodemailer = require('nodemailer');
 const User = require('../models/user');
 var express = require('express');
-var router = express.Router();
 var csrfProtection = csrf({ cookie: true });
+var router = express.Router();
 
-const auth = function (req, res, next) {
+// const auth = function (req, res, next) {
 
+//   try {
+//     const header = req.header('x-auth-token');
+//     const token = header && header.split(' ')[1];
+//     if (token == null) {
+//       return res.redirect('/users/login');
+//     } else {
+//       jwt.verify(token, process.env.APP_SECRET_KEY, (err, user) => {
+//         if (err) throw err;
+//         req.user = user;
+//         next();
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+
+router.get('/forgot-password', csrfProtection, (req, res, next) => {
   try {
-    const header = req.header('x-auth-token');
-    const token = header && header.split(' ')[1];
-    if (token == null) {
-      return res.redirect('/users/login');
-    } else {
-      jwt.verify(token, process.env.APP_SECRET_KEY, (err, user) => {
-        if (err) throw err;
-        req.user = user;
-        next();
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-router.get('/forgot-password', (req, res, next) => {
-  try {
-    res.render('pages/forgot-password');
+    res.render('pages/forgot-password', { title: 'Forgot Password', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
   } catch (err) {
     console.log(err);
   }
 });
 
-router.get('/reset-password', (req, res, next) => {
-  try {
-    res.render('pages/reset-password');
 
+router.post('/forgot', (req, res, next) => {
+
+});
+
+
+router.get('/reset-password', csrfProtection, (req, res, next) => {
+  try {
+    res.render('pages/reset-password', { title: 'Reset Password', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
   } catch (err) {
     console.log(err);
   }
+});
+
+router.post('/reset', (req, res, next) => {
+
 });
 
 // getting users login form
@@ -56,13 +67,13 @@ router.get('/login', csrfProtection, (req, res, next) => {
 
 });
 
-router.get('/update', auth, (req, res, next) => {
+router.get('/update', (req, res, next) => {
   res.render('pages/update', { title: 'Update Profile', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 
 });
 
-router.get('/change', auth, (req, res, next) => {
+router.get('/change', (req, res, next) => {
   res.render('pages/change-password', { title: 'Change Password', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 
@@ -70,7 +81,7 @@ router.get('/change', auth, (req, res, next) => {
 
 
 // getting users home
-router.get('/home', csrfProtection, auth, (req, res, next) => {
+router.get('/home', csrfProtection, (req, res, next) => {
   try {
     res.render('pages/home', { title: 'User Dashboard', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
@@ -83,7 +94,7 @@ router.get('/home', csrfProtection, auth, (req, res, next) => {
 });
 
 //..getting users signup form
-router.get('/signup', csrfProtection, auth, (req, res, next) => {
+router.get('/signup', csrfProtection, (req, res, next) => {
   res.render('pages/signup', { title: 'Create an Account', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 

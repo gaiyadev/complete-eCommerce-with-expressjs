@@ -1,6 +1,6 @@
 <div id="loginbox">
     {{> messages }}
-    <form id="loginform" class="form-vertical" action="login" method="POST">
+    <form id="loginform" class="form-vertical" action="/access/login" method="POST">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="control-group normal_text">
             <h3><img src="../admin/img/logo.png" alt="Logo" /></h3>
@@ -27,7 +27,7 @@
         </div>
     </form>
     <form id="recoverform" action="forgot" method="post" class="form-vertical">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <input type="text" name="_csrf" value="{{csrfToken}}">
         <p class="normal_text">Enter your e-mail address below and we will send you instructions how to recover a
             password.</p>
 

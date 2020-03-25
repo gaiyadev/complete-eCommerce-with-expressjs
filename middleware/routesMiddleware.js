@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+//const jwt = require('jsonwebtoken');
+//require('dotenv').config();
 
 
 
@@ -25,21 +25,21 @@ require('dotenv').config();
 // }    
 //  }
 
-module.exports = function (req, res, next) {
-  try {
-    const header = req.header('x-auth-token');
+// module.exports = function (req, res, next) {
+//   try {
+//     const header = req.header('x-auth-token');
 
-    if (typeof header !== 'undefined') {
-      const bearer = header.split(' ');
-      const token = bearer[1];
-      req.token = token;
-      next();
-    } else {
-      return res.redirect('/users/login');
-    }
+//     if (typeof header !== 'undefined') {
+//       const bearer = header.split(' ');
+//       const token = bearer[1];
+//       req.token = token;
+//       next();
+//     } else {
+//       return res.redirect('/users/login');
+//     }
 
-  } catch (err) {
-    console.log('invalid token');
-    return res.redirect('/users/login');
-  }
-}
+//   } catch (err) {
+//     console.log('invalid token');
+//     return res.redirect('/users/login');
+//   }
+// }
