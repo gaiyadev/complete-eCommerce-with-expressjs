@@ -3,7 +3,7 @@ var csrf = require('csurf')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const config = require('config');
-const auth = require('../middleware/routesMiddleware');
+//const auth = require('../middleware/routesMiddleware');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -13,6 +13,26 @@ var express = require('express');
 var router = express.Router();
 var csrfProtection = csrf({ cookie: true });
 
+const auth = function(req, res, next) {  
+
+  try {
+    const header = req.header('x-auth-token');     
+       const token = header && header.split(' ')[1];
+        if(token == null) {
+          return res.redirect('/users/login');
+        } else {
+          jwt.verify(token, process.env.APP_SECRET_KEY, (err, user) =>{
+            if(err) throw err;
+            req.user = user;
+            next();
+          });
+        }
+  } catch (err) {
+    console.log(err);
+  }
+}
+   
+
 
 // getting users login form
 router.get('/login', csrfProtection, (req, res, next) => {
@@ -21,7 +41,7 @@ router.get('/login', csrfProtection, (req, res, next) => {
   
   });
 
-  router.get('/update', (req, res, next) => {
+  router.get('/update', auth, (req, res, next) => {
     res.render('pages/update', {title: 'Update Profile', layout: 'userLayout', success: req.session.success, errors: req.session.errors} );
     req.session.errors = null;
     
@@ -35,13 +55,20 @@ router.get('/login', csrfProtection, (req, res, next) => {
     
   
   // getting users home
-  router.get('/home', csrfProtection,  (req, res, next) => {
-  res.render('pages/home', {title: 'User Dashboard', layout: 'userLayout',  csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors} );
-  req.session.errors = null;
+  router.get('/home', csrfProtection, auth, (req, res, next) => {
+   try {
+    res.render('pages/home', {title: 'User Dashboard', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors} );
+      req.session.errors = null;   
+     // console.log(';decoded' + decoded);   
+   } catch (err) {
+     console.log(err);
+     
+   }
+ 
   });
 
   //..getting users signup form
-  router.get('/signup', csrfProtection, (req, res, next) => {
+  router.get('/signup', csrfProtection, auth, (req, res, next) => {
     res.render('pages/signup', {title: 'Create an Account', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
   
@@ -51,6 +78,7 @@ router.get('/login', csrfProtection, (req, res, next) => {
 router.post('/logout', (req, res) => {
 console.log('ss');
 });
+
 router.post('/login', (req,  res, next) => {
   let email = req.body.email;
   let password = req.body.password; 
@@ -86,10 +114,14 @@ router.post('/login', (req,  res, next) => {
             res.redirect('back'); 
         }else  {
           // success login ... Generating jwt for auth
-          let token = jwt.sign({_id: user._id, Email: user.Email}, process.env.APP_SECRET_KEY);
-          console.log(token);
-        res.header('x-auth-token', token);
-        res.redirect('/users/home'); 
+          jwt.sign({_id: user._id, Email: user.Email}, process.env.APP_SECRET_KEY, (err, token) =>{
+            if(err) throw err;
+            console.log(token);
+           // res.send(token);
+            res.headers('x-auth-token', token);
+               return  res.redirect('/users/home'); 
+          });
+         
          
         }
   

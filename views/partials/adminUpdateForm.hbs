@@ -8,47 +8,51 @@
       </div>
       <div class="modal-body">
         {{#if admins}}
-            {{#each admins }} 
+        {{#each admins }}
         <form action="/access/user/update/{{_doc._id }} " method="post" class="form-horizontal">
-          {{/each}}            
-            {{/if}}
-           <input type="hidden" id="id" name="id"  />
-            <div class="control-group">
-              <label class="control-label">First Name :</label>
-              <div class="controls">
-                <input type="text" id="firstname" minlength="4" required maxlength="50" class="first_name" name="first_name" placeholder="First name" />
-              </div>
+          {{/each}}
+          {{/if}}
+          <input type="hidden" id="id" name="id" />
+          <div class="control-group">
+            <label class="control-label">First Name :</label>
+            <div class="controls">
+              <input type="text" id="firstname" minlength="4" required maxlength="50" class="first_name"
+                name="first_name" placeholder="First name" />
             </div>
-            <div class="control-group">
-              <label class="control-label">Last Name :</label>
-              <div class="controls">
-                <input type="text" id="lastname" minlength="4" required maxlength="50" class="" name="last_name" placeholder="Last name" />
-              </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Last Name :</label>
+            <div class="controls">
+              <input type="text" id="lastname" minlength="4" required maxlength="50" class="" name="last_name"
+                placeholder="Last name" />
             </div>
-              <div class="control-group">
-              <label class="control-label">Email</label>
-              <div class="controls">
-                <input type="email" id="useremail" minlength="4" maxlength="50" required name="user_email"  class="" placeholder="Enter Email"  />
-              </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Email</label>
+            <div class="controls">
+              <input type="email" id="useremail" minlength="4" maxlength="50" required name="user_email" class=""
+                placeholder="Enter Email" />
             </div>
-             <div class="control-group">
-              <label class="control-label">Username</label>
-              <div class="controls">
-                <input type="text" id="username" minlength="4" maxlength="50" required name="username"  class="" placeholder="Username"  />
-              </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Username</label>
+            <div class="controls">
+              <input type="text" id="username" minlength="4" maxlength="50" required name="username" class=""
+                placeholder="Username" />
             </div>
-             <div class="control-group">
-              <label class="control-label" for="role">User Role</label>
-              <div class="controls">
-                <select name="user_role"  id="role" required>
-                  <option value="Basic">Basic</option>
-                  <option value="Administrator"> Administrator</option>                  
-                </select>
-              </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="role">User Role</label>
+            <div class="controls">
+              <select name="user_role" id="role" required>
+                <option value="Basic">Basic</option>
+                <option value="Administrator"> Administrator</option>
+              </select>
             </div>
-              <div class="form-actions">
-              <button id="update" type="submit" name="save" class="btn btn-success">Save</button>
-            </div>
+          </div>
+          <div class="form-actions">
+            <button id="update" type="submit" name="save" class="btn btn-success">Save</button>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -56,5 +60,5 @@
       </div>
     </div>
   </div>
-</div> 
- {{!-- --end-update-part-- --}}
+</div>
+{{!-- --end-update-part-- --}}

@@ -1,13 +1,13 @@
 const db = require('../database/db');
 const mongoose = require('mongoose');
-const ReviewSchema = new mongoose.Schema ({
+const ReviewSchema = new mongoose.Schema({
     Name: {
         type: String,
         required: true,
         minlength: 4,
-        maxlength: 50,        
-    },    
-     Review: {
+        maxlength: 50,
+    },
+    Review: {
         type: String,
         required: true,
         minlength: 4,
@@ -15,7 +15,7 @@ const ReviewSchema = new mongoose.Schema ({
     },
     ProductReview: {
         type: String,
-    }, 
+    },
     CreatedAt: {
         type: Date,
         default: Date.now
@@ -28,6 +28,5 @@ module.exports = Review;
 
 // Function to create new Admin    
 module.exports.createReview = (newReview, callback) => {
-        newReview.save(callback); //create New Product
-    }
-    
+    newReview.save(callback); //create New Product
+}

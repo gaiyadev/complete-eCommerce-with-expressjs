@@ -1,12 +1,12 @@
 const db = require('../database/db');
 const mongoose = require('mongoose');
 require('../models/admin');
-const ProductSchema = new mongoose.Schema ({
+const ProductSchema = new mongoose.Schema({
     ProductName: {
         type: String,
         required: true,
         minlength: 4,
-        maxlength: 50,        
+        maxlength: 50,
     },
     ProductCategory: {
         type: String,
@@ -63,6 +63,5 @@ module.exports = Product;
 
 // Function to create new Admin    
 module.exports.createProduct = (newProduct, callback) => {
-        newProduct.save(callback); //create New Product
-    }
-    
+    newProduct.save(callback); //create New Product
+}

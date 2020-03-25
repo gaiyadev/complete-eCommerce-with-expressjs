@@ -1,65 +1,69 @@
-<div class="container-fluid"><br/>
+<div class="container-fluid"><br />
   {{> messages }}
-      <div class="widget-box">
-          <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-            <h5>Jewlyry Fashion</h5>
-          </div>
-          <div class="widget-content nopadding">
-            <table class="table table-bordered data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Product Name</th>
-                  <th>Price</th>
-                  <th>SIze</th>
-                  <th>Brand</th>
-                   <th>SKU</th>
-                   <td>Image</td>
-                   <td>CreatedAt</td>
-                   <th>Action</th>
-                </tr>
-              </thead>
-             {{#if products}}
-              {{#each products }} 
-              <tbody>        
-                <tr class="">
-                <td>{{increment @index }}</td>
-                <td>{{ _doc.ProductName }}</td>
-                <td> &#8358	{{ _doc.ProductPrice }}</td>
-                <td>{{ _doc.ProductSize }}</td>
-                <td>{{ _doc.ProductBrand }}</td>
-                <td>{{ _doc.SKUNumber }}</td>
-                <td> <img height="50" width="50" src="/../uploads/{{ _doc.ProductImage }}" alt="product image"/> </td>
-                  <td> {{formatDate _doc.CreatedAt }} </td>
-                  <td >
-                     <a href="/access/edit_jewlyry_product/{{ _doc._id }}" style="float: right;" id="edit" class="btn btn-info"><i class="icon-edit"></i></a>
-                    <a href="/access/show_product/{{ _doc._id }} " style="float: right;"  id="edit" class="btn btn-info"><i class="icon-book"></i></a>
-                    <form action="/access/product/jewlyry/delete" method="POST" id="delete-form" style="float: right;">
-                      <input type="hidden" name="id" value="{{ _doc._id }}">
-                      <input type="hidden" name="pic_image" value="{{ _doc.ProductImage }}" />
-                      <button style="float: right;" type="submit" class="btn btn-danger"><i class="icon-trash"></i></button>
-                    </form>
-                  </td>
-                </tr>
-              </tbody>
-               {{/each}}
-                {{else}}
-                <table>
-                  <tr>
-                    <td><h3 style=" color:red; margin-left: 400px;" class="text-center">No Record found</h3><td>
-                  </tr>
-                </table>
-            {{/if}}
-            </table>
-          </div>
-        </div>
-      </div>
+  <div class="widget-box">
+    <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
+      <h5>Jewlyry Fashion</h5>
+    </div>
+    <div class="widget-content nopadding">
+      <table class="table table-bordered data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>SIze</th>
+            <th>Brand</th>
+            <th>SKU</th>
+            <td>Image</td>
+            <td>CreatedAt</td>
+            <th>Action</th>
+          </tr>
+        </thead>
+        {{#if products}}
+        {{#each products }}
+        <tbody>
+          <tr class="">
+            <td>{{increment @index }}</td>
+            <td>{{ _doc.ProductName }}</td>
+            <td> &#8358 {{ _doc.ProductPrice }}</td>
+            <td>{{ _doc.ProductSize }}</td>
+            <td>{{ _doc.ProductBrand }}</td>
+            <td>{{ _doc.SKUNumber }}</td>
+            <td> <img height="50" width="50" src="/../uploads/{{ _doc.ProductImage }}" alt="product image" /> </td>
+            <td> {{formatDate _doc.CreatedAt }} </td>
+            <td>
+              <a href="/access/edit_jewlyry_product/{{ _doc._id }}" style="float: right;" id="edit"
+                class="btn btn-info"><i class="icon-edit"></i></a>
+              <a href="/access/show_product/{{ _doc._id }} " style="float: right;" id="edit" class="btn btn-info"><i
+                  class="icon-book"></i></a>
+              <form action="/access/product/jewlyry/delete" method="POST" id="delete-form" style="float: right;">
+                <input type="hidden" name="id" value="{{ _doc._id }}">
+                <input type="hidden" name="pic_image" value="{{ _doc.ProductImage }}" />
+                <button style="float: right;" type="submit" class="btn btn-danger"><i class="icon-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+        {{/each}}
+        {{else}}
+        <table>
+          <tr>
+            <td>
+              <h3 style=" color:red; margin-left: 400px;" class="text-center">No Record found</h3>
+            <td>
+          </tr>
+        </table>
+        {{/if}}
+      </table>
     </div>
   </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
 
- 
+
 <!--end-main-container-part-->

@@ -1,11 +1,11 @@
 const db = require('../database');
 
-const OrderSchema = new mongoose.Schema ({
+const OrderSchema = new mongoose.Schema({
     FirstName: {
         type: String,
         required: true,
         minlength: 4,
-        maxlength: 50,        
+        maxlength: 50,
     },
     LastName: {
         type: String,

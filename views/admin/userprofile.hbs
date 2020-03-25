@@ -1,35 +1,38 @@
-  <div class="container-fluid">
-        <div class="row-fluid">
+<div class="container-fluid">
+  <div class="row-fluid">
     <div class="span12">
       <div class="widget-box">
         {{> messages}}
         <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
           <h5 class="title" id="title">Profile infomation</h5>
         </div>
-        <br/>
+        <br />
         <div class="widget-content nopadding">
-          {{#with admin }}            
+          {{#with admin }}
           <form action="/access/admin/update/{{_doc._id }} " method="post" class="form-horizontal">
             <div class="control-group">
               <label class="control-label">FIrst Name :</label>
               <div class="controls">
-                <input type="text" value="{{ _doc.FirstName }} " class="span11" name="first_name" id="text" placeholder="First name" />
+                <input type="text" value="{{ _doc.FirstName }} " class="span11" name="first_name" id="text"
+                  placeholder="First name" />
               </div>
             </div>
-          
+
             <div class="control-group">
               <label class="control-label">Last Name</label>
               <div class="controls">
-                <input type="text"  class="span11" name="last_name" value=" {{_doc.LastName }} " id="text" placeholder="Enter Name"  />
+                <input type="text" class="span11" name="last_name" value=" {{_doc.LastName }} " id="text"
+                  placeholder="Enter Name" />
               </div>
             </div>
-              <div class="control-group">
+            <div class="control-group">
               <label class="control-label">Username</label>
               <div class="controls">
-                <input type="text" value=" {{ _doc.Username }} " class="span11" name="username"  id="text" placeholder="Enter username"  />
+                <input type="text" value=" {{ _doc.Username }} " class="span11" name="username" id="text"
+                  placeholder="Enter username" />
               </div>
             </div>
-              {{!-- <div class="control-group">
+            {{!-- <div class="control-group">
               <label class="control-label">Email Address</label>
               <div class="controls">
                 <input type="email" value=" {{_doc.Email}} "  class="span11"  id="text" placeholder="Enter Email"  />
@@ -43,31 +46,34 @@
         </div>
       </div>
     </div>
-  
+
   </div>
 </div>
 
 
 </div>
 
-  <style>
-       #text, select {
-	height: 44px;
-	border: none;
-	padding: 0 18px;
-	background: #f0f0f0;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	font-size: 14px;
-}
-#title {
-  font-size: 20px;
-}
- #btn {
-	width: 150px;
-	border: none;
-  height: 39px;
-	padding: 0 18px;
-	border-radius: 10px;
-}
-  </style>
+<style>
+  #text,
+  select {
+    height: 44px;
+    border: none;
+    padding: 0 18px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  #title {
+    font-size: 20px;
+  }
+
+  #btn {
+    width: 150px;
+    border: none;
+    height: 39px;
+    padding: 0 18px;
+    border-radius: 10px;
+  }
+</style>

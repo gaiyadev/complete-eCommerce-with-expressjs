@@ -1,5 +1,5 @@
- require('dotenv').config();
- var csrf = require('csurf')
+require('dotenv').config();
+var csrf = require('csurf')
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const config = require('config');
@@ -18,7 +18,7 @@ var router = express.Router();
 
 /* Admin login page. */
 router.get('/', csrfProtection, (req, res, next) => {
-  res.render('admin/login', { title: 'Admin Login', layout:'loginLayout.hbs', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors});
+  res.render('admin/login', { title: 'Admin Login', layout: 'loginLayout.hbs', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 });
 
@@ -26,34 +26,34 @@ router.get('/', csrfProtection, (req, res, next) => {
 router.get('/dashboard', ensureAuthenicated, csrfProtection, (req, res, next) => {
   try {
     let id = req.user._id;
-    Admin.findOne({ Role: 'Administrator', _id: id}, (err, role) => {
-      if(err) throw err;
+    Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+      if (err) throw err;
       const name = req.user.Username;
       const username = name.toUpperCase();
-      res.render('admin/index', { title: 'NodeStore Dashboard',  role: role,  username: username, layout:'adminlayouts.hbs', csrfToken:req.csrfToken(), success: req.session.success, errors: req.session.errors});
+      res.render('admin/index', { title: 'NodeStore Dashboard', role: role, username: username, layout: 'adminlayouts.hbs', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
       req.session.errors = null;
-     // console.log(role);
-    }).select({ Role: 1});
+      // console.log(role);
+    }).select({ Role: 1 });
   } catch (error) {
     console.log(error);
   }
- 
+
 });
 
 /* GET Categories page. */
 router.get('/product', ensureAuthenicated, (req, res, next) => {
- try {
-  const id = req.user._id;
-  const name = req.user.Username;
-  const username = name.toUpperCase();
-  Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
-    if(err) throw err;
-    res.render('admin/product', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-  req.session.errors = null;
-  }).select({ Role: 1});
- } catch (error) {
-   console.log(error);
- }
+  try {
+    const id = req.user._id;
+    const name = req.user.Username;
+    const username = name.toUpperCase();
+    Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+      if (err) throw err;
+      res.render('admin/product', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      req.session.errors = null;
+    }).select({ Role: 1 });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 /* GET Men page. And Fetch from the database */
@@ -62,18 +62,18 @@ router.get('/men', ensureAuthenicated, async (req, res, next) => {
     const name = req.user.Username;
     const username = name.toUpperCase();
     const id = req.user._id;
-    await Product.find({ ProductCategory: 'Men Fashion', AuthorCreated: id  }, (err, products) => {
-      if(err){
+    await Product.find({ ProductCategory: 'Men Fashion', AuthorCreated: id }, (err, products) => {
+      if (err) {
         console.log(err);
-      }else {
-        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+      } else {
+        Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
           if (err) throw err;
-          res.render('admin/men', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
-        }).select({ Role: 1});
-      } 
-    });   
+          res.render('admin/men', { title: 'NodeStore Dashboard Categories', role: role, username: username, products: products, layout: 'adminlayouts.hbs' });
+        }).select({ Role: 1 });
+      }
+    });
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
 });
 
@@ -84,18 +84,18 @@ router.get('/women', ensureAuthenicated, async (req, res, next) => {
     const name = req.user.Username;
     const username = name.toUpperCase();
     const id = req.user._id;
-    await Product.find({ ProductCategory: 'Women Fashion',  AuthorCreated: id }, (err, products) => {
-      if(err){
+    await Product.find({ ProductCategory: 'Women Fashion', AuthorCreated: id }, (err, products) => {
+      if (err) {
         console.log(err);
-      }else {
-        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
+      } else {
+        Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
           if (err) throw err;
-          res.render('admin/women', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
-        }).select({ Role: 1});
-      } 
-    });   
+          res.render('admin/women', { title: 'NodeStore Dashboard Categories', role: role, username: username, products: products, layout: 'adminlayouts.hbs' });
+        }).select({ Role: 1 });
+      }
+    });
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
 });
 
@@ -106,18 +106,18 @@ router.get('/shoes', ensureAuthenicated, async (req, res, next) => {
     const name = req.user.Username;
     const id = req.user._id;
     const username = name.toUpperCase();
-    await Product.find({ ProductCategory: 'Shoes',  AuthorCreated: id }, (err, products) => {
-      if(err){
+    await Product.find({ ProductCategory: 'Shoes', AuthorCreated: id }, (err, products) => {
+      if (err) {
         console.log(err);
-      }else {
-        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
-          if(err) throw err;
-          res.render('admin/shoes', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
-        }).select({ Role: 1});
-      } 
-    });   
+      } else {
+        Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+          if (err) throw err;
+          res.render('admin/shoes', { title: 'NodeStore Dashboard Categories', role: role, username: username, products: products, layout: 'adminlayouts.hbs' });
+        }).select({ Role: 1 });
+      }
+    });
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
 });
 
@@ -129,17 +129,17 @@ router.get('/phones', ensureAuthenicated, async (req, res, next) => {
     const id = req.user._id;
     const username = name.toUpperCase();
     await Product.find({ ProductCategory: 'Phones and  Tablets', AuthorCreated: id }, (err, products) => {
-      if(err){
+      if (err) {
         console.log(err);
-      }else {
+      } else {
         Admin.findOne({}, (err, role) => {
-          if(err) throw err;
-          res.render('admin/phonesandTabs', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
-        }).select({ Role: 1});
-      } 
-    });   
+          if (err) throw err;
+          res.render('admin/phonesandTabs', { title: 'NodeStore Dashboard Categories', role: role, username: username, products: products, layout: 'adminlayouts.hbs' });
+        }).select({ Role: 1 });
+      }
+    });
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
 });
 
@@ -151,227 +151,227 @@ router.get('/jewlyry', ensureAuthenicated, async (req, res, next) => {
     const id = req.user._id;
     const username = name.toUpperCase();
     await Product.find({ ProductCategory: 'Jewlyries', AuthorCreated: id }, (err, products) => {
-      if(err){
+      if (err) {
         console.log(err);
-      }else {
-        Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
-          if(err) throw err;
-          res.render('admin/jewlyry', { title: 'NodeStore Dashboard Categories', role: role, username: username, products:products, layout:'adminlayouts.hbs'});
-        }).select({ Role: 1});
-      } 
-    });   
+      } else {
+        Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+          if (err) throw err;
+          res.render('admin/jewlyry', { title: 'NodeStore Dashboard Categories', role: role, username: username, products: products, layout: 'adminlayouts.hbs' });
+        }).select({ Role: 1 });
+      }
+    });
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
 });
 
 /* GET Order page. */
 router.get('/order', ensureAuthenicated, (req, res, next) => {
- try {
-  const name = req.user.Username;
-  const username = name.toUpperCase();
-  const id = req.user._id;
-  Admin.findOne({Role: 'Administrator', _id: id }, (err, role) => {
-    if(err) throw err;
-    res.render('admin/order', { title: 'NodeStore Dashboard Categories', role: role, username: username, layout:'adminlayouts.hbs'});
-  }).select({ Role: 1});
- } catch (error) {
-   console.log(error);
- }
+  try {
+    const name = req.user.Username;
+    const username = name.toUpperCase();
+    const id = req.user._id;
+    Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+      if (err) throw err;
+      res.render('admin/order', { title: 'NodeStore Dashboard Categories', role: role, username: username, layout: 'adminlayouts.hbs' });
+    }).select({ Role: 1 });
+  } catch (error) {
+    console.log(error);
+  }
 });
- 
 
-/* GET User(ADMINS) page. AND FETCH FROM FROM THE DATABASE */ 
+
+/* GET User(ADMINS) page. AND FETCH FROM FROM THE DATABASE */
 router.get('/users', ensureAuthenicated, async (req, res, next) => {
- try {
-  const name = req.user.Username;
-  const username = name.toUpperCase();
-  await Admin.find({}, (err, admins) => {
-    if(err){
-      console.log(err);
-    }else {
-     res.render('admin/user', { title: 'NodeStore Dashboard Categories', username: username, admins:admins, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-    } 
-  });   
- } catch (error) {
-   console.log(error);
- }
+  try {
+    const name = req.user.Username;
+    const username = name.toUpperCase();
+    await Admin.find({}, (err, admins) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/user', { title: 'NodeStore Dashboard Categories', username: username, admins: admins, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
- /**
-  * END OF GETTING USERS  FROM DB
-  */
+/**
+ * END OF GETTING USERS  FROM DB
+ */
 
 
 // Deleting  admins
 router.post('/admin/delete/', async (req, res) => {
- try {
-     let Id = req.body.id;
-   await Admin.deleteOne({_id: Id}, (err) => {
-      if(err) throw err;
+  try {
+    let Id = req.body.id;
+    await Admin.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
       req.session.message = {
         type: 'success',
         intro: '',
         message: 'User deleted successfully'
-    }
-        res.location('/access/users');
-        res.redirect('/access/users');
+      }
+      res.location('/access/users');
+      res.redirect('/access/users');
       console.log('Deleteted');
     });
- } catch (error) {
-   console.log(error);
- }
+  } catch (error) {
+    console.log(error);
+  }
 });
- /**
-  * END OF DELETING ADMIN 
-  *   */
+/**
+ * END OF DELETING ADMIN 
+ *   */
 
 
 // Deleting  Men category product
 router.post('/product/men/delete/', async (req, res) => {
   try {
-      let Id        = req.body.id;
-      let pic_image = req.body.pic_image;
-   await  Product.deleteOne({_id: Id}, (err) => {
-       if(err) throw err;
-       req.session.message = {
-         type: 'success',
-         intro: '',
-         message: 'Product deleted successfully'
-     }
-        res.location('/access/men');
-        res.redirect('/access/men');
-        console.log('Deleteted');
-     });
-     // Deleting picture in the folder
-     fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-      if(err) throw err;
+    let Id = req.body.id;
+    let pic_image = req.body.pic_image;
+    await Product.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product deleted successfully'
+      }
+      res.location('/access/men');
+      res.redirect('/access/men');
+      console.log('Deleteted');
+    });
+    // Deleting picture in the folder
+    fs.unlink(`./public/uploads/${pic_image}`, (err) => {
+      if (err) throw err;
       console.log('deleted successfully');
-     });
+    });
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  * END OF DELETING MENS CATEGORY PRODUCT
-  */
+});
+/**
+ * END OF DELETING MENS CATEGORY PRODUCT
+ */
 
-  
+
 // Deleting  Women category product
 router.post('/product/women/delete/', async (req, res) => {
   try {
-      let Id        = req.body.id;
-      let pic_image = req.body.pic_image;
-   await  Product.deleteOne({_id: Id}, (err) => {
-       if(err) throw err;
-       req.session.message = {
-         type: 'success',
-         intro: '',
-         message: 'Product deleted successfully'
-     }
-        res.location('/access/women');
-        res.redirect('/access/women');
-        console.log('Deleteted');
-     });
-     // Deleting picture in the folder
-     fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-      if(err) throw err;
+    let Id = req.body.id;
+    let pic_image = req.body.pic_image;
+    await Product.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product deleted successfully'
+      }
+      res.location('/access/women');
+      res.redirect('/access/women');
+      console.log('Deleteted');
+    });
+    // Deleting picture in the folder
+    fs.unlink(`./public/uploads/${pic_image}`, (err) => {
+      if (err) throw err;
       console.log('deleted successfully');
-     });
+    });
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  * END OF DELETING WOMENS CATEGORY PRODUCT
-  */
+});
+/**
+ * END OF DELETING WOMENS CATEGORY PRODUCT
+ */
 // Deleting  SHOES category product
 router.post('/product/shoes/delete/', async (req, res) => {
   try {
-      let Id        = req.body.id;
-      let pic_image = req.body.pic_image;
-   await  Product.deleteOne({_id: Id}, (err) => {
-       if(err) throw err;
-       req.session.message = {
-         type: 'success',
-         intro: '',
-         message: 'Product deleted successfully'
-     }
-        res.location('/access/shoes');
-        res.redirect('/access/shoes');
-        console.log('Deleteted');
-     });
-     // Deleting picture in the folder
-     fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-      if(err) throw err;
+    let Id = req.body.id;
+    let pic_image = req.body.pic_image;
+    await Product.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product deleted successfully'
+      }
+      res.location('/access/shoes');
+      res.redirect('/access/shoes');
+      console.log('Deleteted');
+    });
+    // Deleting picture in the folder
+    fs.unlink(`./public/uploads/${pic_image}`, (err) => {
+      if (err) throw err;
       console.log('deleted successfully');
-     });
+    });
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  * END OF DELETING SHOES CATEGORY PRODUCT
-  */
+});
+/**
+ * END OF DELETING SHOES CATEGORY PRODUCT
+ */
 
-  // Deleting  Jewlyries category product
+// Deleting  Jewlyries category product
 router.post('/product/jewlyry/delete/', async (req, res) => {
   try {
-      let Id        = req.body.id;
-      let pic_image = req.body.pic_image;
-   await  Product.deleteOne({_id: Id}, (err) => {
-       if(err) throw err;
-       req.session.message = {
-         type: 'success',
-         intro: '',
-         message: 'Product deleted successfully'
-     }
-        res.location('/access/jewlyry');
-        res.redirect('/access/jewlyry');
-        console.log('Deleteted');
-     });
-     // Deleting picture in the folder
-     fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-      if(err) throw err;
+    let Id = req.body.id;
+    let pic_image = req.body.pic_image;
+    await Product.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product deleted successfully'
+      }
+      res.location('/access/jewlyry');
+      res.redirect('/access/jewlyry');
+      console.log('Deleteted');
+    });
+    // Deleting picture in the folder
+    fs.unlink(`./public/uploads/${pic_image}`, (err) => {
+      if (err) throw err;
       console.log('deleted successfully');
-     });
+    });
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  * END OF DELETING Jewlyries CATEGORY PRODUCT
-  */
+});
+/**
+ * END OF DELETING Jewlyries CATEGORY PRODUCT
+ */
 
 
-  
-  // Deleting  Phones And Tabs category product
+
+// Deleting  Phones And Tabs category product
 router.post('/product/phones/delete/', async (req, res) => {
   try {
-      let Id        = req.body.id;
-      let pic_image = req.body.pic_image;
-   await  Product.deleteOne({_id: Id}, (err) => {
-       if(err) throw err;
-       req.session.message = {
-         type: 'success',
-         intro: '',
-         message: 'Product deleted successfully'
-     }
-        res.location('/access/phones');
-        res.redirect('/access/phones');
-        console.log('Deleteted');
-     });
-     // Deleting picture in the folder
-     fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-      if(err) throw err;
+    let Id = req.body.id;
+    let pic_image = req.body.pic_image;
+    await Product.deleteOne({ _id: Id }, (err) => {
+      if (err) throw err;
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product deleted successfully'
+      }
+      res.location('/access/phones');
+      res.redirect('/access/phones');
+      console.log('Deleteted');
+    });
+    // Deleting picture in the folder
+    fs.unlink(`./public/uploads/${pic_image}`, (err) => {
+      if (err) throw err;
       console.log('deleted successfully');
-     });
+    });
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  * END OF DELETING Phones and Tabs CATEGORY PRODUCT
-  */
+});
+/**
+ * END OF DELETING Phones and Tabs CATEGORY PRODUCT
+ */
 
 
 
@@ -381,10 +381,10 @@ router.get('/user-profile', ensureAuthenicated, (req, res, next) => {
   let id = req.user._id;
   const name = req.user.Username;
   const username = name.toUpperCase();
-  Admin.findOne({_id: id }, (err, admin) => {
-    if(err) throw err;
-    res.render('admin/userprofile', { title: 'NodeStore Dashboard Categories', username: username, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors, admin:admin});
-  console.log('see it');
+  Admin.findOne({ _id: id }, (err, admin) => {
+    if (err) throw err;
+    res.render('admin/userprofile', { title: 'NodeStore Dashboard Categories', username: username, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors, admin: admin });
+    console.log('see it');
     console.log(admin);
   });
 });
@@ -394,336 +394,336 @@ router.get('/user-change-password', ensureAuthenicated, (req, res, next) => {
   let id = req.user._id;
   const name = req.user.Username;
   const username = name.toUpperCase();
-  Admin.findOne({Role: 'Administrator', _id: id}, (err, role) => {
-    if(err) throw err;
-    res.render('admin/user-change-password', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout:'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-  }).select({Role: 1});
+  Admin.findOne({ Role: 'Administrator', _id: id }, (err, role) => {
+    if (err) throw err;
+    res.render('admin/user-change-password', { title: 'NodeStore Dashboard Categories', role: role, username: username, id: id, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+  }).select({ Role: 1 });
 });
 
 /**
  * POSTING DATA AND GETTING TO THE DB SECTION 
  */
 // To handle file uploads
-const storage =   multer.diskStorage({
-  destination: './public/uploads', 
-  filename:  (req,  file, callback) => {
-    callback(null, file.originalname);   
+const storage = multer.diskStorage({
+  destination: './public/uploads',
+  filename: (req, file, callback) => {
+    callback(null, file.originalname);
   },
 });
 const upload = multer({
-  storage : storage,
+  storage: storage,
   limits: {
     fileSize: 5000000
   },
   fileFilter: (req, file, cb) => {
-  // allow images only
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    // allow images only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
       console.log('Only image are allowed.');
-  }
-  cb(null, true);
-}, 
+    }
+    cb(null, true);
+  },
 });
 /**END OF FUNCTION TO HANDLE FILE UPLOAD */
 
 /**
  * ADDING NEW PRODUCT TO THE DATABASE
  */
- router.post('/product/add', upload.single('product_image'), (req, res, next) => {
+router.post('/product/add', upload.single('product_image'), (req, res, next) => {
   try {
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let id                       = req.user.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let id = req.user.id;
     // Validation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking  for error
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors = errors;
-          req.session.success = false;
-          res.redirect('/access/product');
-    }else {    
-    //Creating new Product
-    let newProduct = new Product({
-      ProductName: product_name,
-      ProductCategory: category,
-      ProductPrice: price,
-      ProductSize: size,
-      SKUNumber: sku,
-      ProductBrand: brand,
-      ProductDescription: description,
-      ProductImage: product_image,
-      AuthorCreated: id
-  });
-    //Add New Product
-    Product.createProduct(newProduct, function(err, product){
-      if(err) throw err;
-      //console.log(product);
-    });
-    req.session.message = {
-      type: 'success',
-      intro: '',
-      message: 'New Prodct added successfully'
-  }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect('/access/product');
+    } else {
+      //Creating new Product
+      let newProduct = new Product({
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image,
+        AuthorCreated: id
+      });
+      //Add New Product
+      Product.createProduct(newProduct, function (err, product) {
+        if (err) throw err;
+        //console.log(product);
+      });
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'New Prodct added successfully'
+      }
       res.location('/access/product');
       res.redirect('/access/product');
     }
   } catch (error) {
     console.log(error);
   }
- });
+});
 
 
 // ADDING NEW ADMIN TO THE DB
- router.post('/user/add', (req, res, next) => {
-try {
-  let first_name                    = req.body.first_name;
-  let last_name                     = req.body.last_name;
-  let user_email                    = req.body.user_email;
-  let username                      = req.body.username;
-  let user_role                     = req.body.user_role;
-  let password                      = req.body.password;
-  let confirmed_password            = req.body.confirmed_password;
-  // Validation form inputs
-  req.checkBody('first_name', 'First name field is required').isLength({min:4, max:50}).withMessage('Must be at least 4 chars long');
-  req.checkBody('last_name', 'Last name field is required').isLength({min:4, max:50}).withMessage('Must be at least 4 chars long');
-  req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
-  req.checkBody('password', 'Password field is required').isLength({min:4, max:50}).equals(confirmed_password).withMessage('Confirm password does not match');
-  
-// Checking if errors exist
-  let errors = req.validationErrors();
+router.post('/user/add', (req, res, next) => {
+  try {
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let user_email = req.body.user_email;
+    let username = req.body.username;
+    let user_role = req.body.user_role;
+    let password = req.body.password;
+    let confirmed_password = req.body.confirmed_password;
+    // Validation form inputs
+    req.checkBody('first_name', 'First name field is required').isLength({ min: 4, max: 50 }).withMessage('Must be at least 4 chars long');
+    req.checkBody('last_name', 'Last name field is required').isLength({ min: 4, max: 50 }).withMessage('Must be at least 4 chars long');
+    req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
+    req.checkBody('password', 'Password field is required').isLength({ min: 4, max: 50 }).equals(confirmed_password).withMessage('Confirm password does not match');
+
+    // Checking if errors exist
+    let errors = req.validationErrors();
     if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/access/users');
-  }else {
-    // Checking if Admin already exist
-    Admin.findOne({Email: user_email }, (err, admin) => {
-      if (admin) {
-        req.session.message = {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect('/access/users');
+    } else {
+      // Checking if Admin already exist
+      Admin.findOne({ Email: user_email }, (err, admin) => {
+        if (admin) {
+          req.session.message = {
             type: 'danger',
             intro: '',
             message: 'Admin already exist'
-        }
-            res.location('/access/users');
-            res.redirect('/access/users');
-      }else {
-        //Creating new Admin
-        let newAdmin = new Admin({
-          FirstName: first_name,
-          LastName: last_name,
-          Email: user_email,
-          Username: username,
-          Role: user_role,
-          Password: password,
-          CreatedAt: Date.now()
-      });
-      Admin.createAdmin (newAdmin, function (err, admin) {
-        if (err) throw err;
-        //console.log(admin);
-      });
-     //success message
-     req.session.message = {
-      type: 'success',
-      intro: '',
-      message: 'New Admin Registered successfully'
-      }
-            res.location('/access/users');
-            res.redirect('/access/users');
-      }
-    });
-  }  
-  } catch (error) {
-    console.log(error);
- }
-});
- // Ending of code to add new admins
-
- // UPDATING  ADMIN TO THE DB
- router.post('/user/update/:id', (req, res, next) => {
-  try {
-    let id = req.params.id;
-    let first_name                    = req.body.first_name;
-    let last_name                     = req.body.last_name;
-    let user_email                    = req.body.user_email;
-    let username                      = req.body.username;
-    let user_role                     = req.body.user_role;
-    // Validation form inputs
-    req.checkBody('first_name', 'First name field is required').isLength({min:4, max:50}).withMessage('Must be at least 4 chars long');
-    req.checkBody('last_name', 'Last name field is required').isLength({min:4, max:50}).withMessage('Must be at least 4 chars long');
-    req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
-    req.checkBody('user_role', 'User role field is required').notEmpty();
-    
-  // Checking if errors exist
-    let errors = req.validationErrors();
-      if (errors) {
-          req.session.errors = errors;
-          req.session.success = false;
-          res.redirect('/access/users');
-    }else {
-      console.log(id.ObjectId);
-     // Checking if Admin already exist
-      Admin.findOne({Email: user_email }, (err, admin) => {
-        if (admin) {
-          req.session.message = {
-              type: 'danger',
-              intro: '',
-              message: 'Admin already exist'
           }
-              res.location('/access/users');
-              res.redirect('/access/users');
-        }else {
-            Admin.update({_id: id }, { 
+          res.location('/access/users');
+          res.redirect('/access/users');
+        } else {
+          //Creating new Admin
+          let newAdmin = new Admin({
             FirstName: first_name,
             LastName: last_name,
             Email: user_email,
             Username: username,
-            Role: user_role,  
-    },  (err) => {
-    if(err) throw err; 
-        req.session.message = {
-          type: 'success',
-          intro: '',
-          message: 'User updated successfully'
-      }
+            Role: user_role,
+            Password: password,
+            CreatedAt: Date.now()
+          });
+          Admin.createAdmin(newAdmin, function (err, admin) {
+            if (err) throw err;
+            //console.log(admin);
+          });
+          //success message
+          req.session.message = {
+            type: 'success',
+            intro: '',
+            message: 'New Admin Registered successfully'
+          }
           res.location('/access/users');
-          res.redirect('/access/users'); 
-  });           
-     }
+          res.redirect('/access/users');
+        }
       });
-    }  
-    } catch (error) {
-      console.log(error);
-   }
-  });
-
-
-
-/* GET Single product page. AND FETCH FROM FROM THE DATABASE */ 
-router.get('/show_product/:id', ensureAuthenicated, async (req, res, next) => {
-  try {
-    let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/viewProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs'});
-     } 
-   });   
+    }
   } catch (error) {
     console.log(error);
   }
- });
+});
+// Ending of code to add new admins
+
+// UPDATING  ADMIN TO THE DB
+router.post('/user/update/:id', (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let user_email = req.body.user_email;
+    let username = req.body.username;
+    let user_role = req.body.user_role;
+    // Validation form inputs
+    req.checkBody('first_name', 'First name field is required').isLength({ min: 4, max: 50 }).withMessage('Must be at least 4 chars long');
+    req.checkBody('last_name', 'Last name field is required').isLength({ min: 4, max: 50 }).withMessage('Must be at least 4 chars long');
+    req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
+    req.checkBody('user_role', 'User role field is required').notEmpty();
+
+    // Checking if errors exist
+    let errors = req.validationErrors();
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect('/access/users');
+    } else {
+      console.log(id.ObjectId);
+      // Checking if Admin already exist
+      Admin.findOne({ Email: user_email }, (err, admin) => {
+        if (admin) {
+          req.session.message = {
+            type: 'danger',
+            intro: '',
+            message: 'Admin already exist'
+          }
+          res.location('/access/users');
+          res.redirect('/access/users');
+        } else {
+          Admin.update({ _id: id }, {
+            FirstName: first_name,
+            LastName: last_name,
+            Email: user_email,
+            Username: username,
+            Role: user_role,
+          }, (err) => {
+            if (err) throw err;
+            req.session.message = {
+              type: 'success',
+              intro: '',
+              message: 'User updated successfully'
+            }
+            res.location('/access/users');
+            res.redirect('/access/users');
+          });
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
+/* GET Single product page. AND FETCH FROM FROM THE DATABASE */
+router.get('/show_product/:id', ensureAuthenicated, async (req, res, next) => {
+  try {
+    let Id = req.params.id;
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/viewProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs' });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 /**
  * END OF GETTING A SINGLE PRODUCT
  */
 
 
- /* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...MEN */ 
+/* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...MEN */
 router.get('/edit_product/:id', ensureAuthenicated, async (req, res, next) => {
   try {
     let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/editProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     } 
-   });   
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/editProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
   } catch (error) {
     console.log(error);
   }
- });
+});
 /**
  * END OF GETTING A SINGLE PRODUCT TO EDIT
  */
 
-  /* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...WOMEN */ 
+/* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...WOMEN */
 router.get('/edit_women_product/:id', ensureAuthenicated, async (req, res, next) => {
   try {
     let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/womenEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     } 
-   });   
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/womenEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
   } catch (error) {
     console.log(error);
   }
- });
+});
 /**
  * END OF GETTING A SINGLE PRODUCT TO EDIT
  */
 
-   /* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...WOMEN */ 
+/* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...WOMEN */
 router.get('/edit_shoes_product/:id', ensureAuthenicated, async (req, res, next) => {
   try {
     let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/shoesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     } 
-   });   
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/shoesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
   } catch (error) {
     console.log(error);
   }
- });
+});
 /**
  * END OF GETTING A SINGLE PRODUCT TO EDIT
  */
 
 
-   /* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...Jewlyry */ 
-router.get('/edit_jewlyry_product/:id', ensureAuthenicated,  async (req, res, next) => {
+/* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...Jewlyry */
+router.get('/edit_jewlyry_product/:id', ensureAuthenicated, async (req, res, next) => {
   try {
     let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/JewlyryEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     } 
-   });   
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/JewlyryEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
   } catch (error) {
     console.log(error);
   }
- });
+});
 /**
  * END OF GETTING A SINGLE PRODUCT TO EDIT
  */
- 
-   /* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...Jewlyry */ 
+
+/* GET Single product page. AND EDIT AND SAVE TO THE DATABASE...Jewlyry */
 router.get('/edit_phones_product/:id', ensureAuthenicated, async (req, res, next) => {
   try {
     let Id = req.params.id;
-   await Product.find({_id: Id }, (err, product) => {
-     if(err){
-       console.log(err);
-     }else {
-      res.render('admin/phonesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors});
-     } 
-   });   
+    await Product.find({ _id: Id }, (err, product) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render('admin/phonesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
+      }
+    });
   } catch (error) {
     console.log(error);
   }
- });
+});
 /**
  * END OF GETTING A SINGLE PRODUCT TO EDIT
  */
@@ -735,485 +735,487 @@ router.get('/edit_phones_product/:id', ensureAuthenicated, async (req, res, next
  */
 router.post('/product/update/:id', upload.single('product_image'), async (req, res, next) => {
   try {
-    let Id                       = req.params.id;
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let pic_image                = req.body.pic_image;
+    let Id = req.params.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let pic_image = req.body.pic_image;
     // Validfation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking if error exist
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors  = errors;
-          req.session.success = false;
-          res.redirect(`/access/edit_product/${Id}`);
-    }else {
-          await  Product.update({_id: Id }, { 
-          ProductName: product_name,
-          ProductCategory: category,
-          ProductPrice: price,
-          ProductSize: size,
-          SKUNumber: sku,
-          ProductBrand: brand,
-          ProductDescription: description,
-          ProductImage: product_image     
-  },  (err) => {
-  if(err) throw err; 
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Product updated successfully'
-    }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect(`/access/edit_product/${Id}`);
+    } else {
+      await Product.update({ _id: Id }, {
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Product updated successfully'
+        }
         res.location('/access/men');
-        res.redirect('/access/men'); 
+        res.redirect('/access/men');
         fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-          if(err) throw err;
+          if (err) throw err;
           console.log('deleted successfully');
-         });
-});   
-}
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
   }
- });
+});
 
- /**
- * UPDATING SINGLE PRODUCT FOR WOMEN CATEGORY
- */
+/**
+* UPDATING SINGLE PRODUCT FOR WOMEN CATEGORY
+*/
 router.post('/product/women/:id', upload.single('product_image'), async (req, res, next) => {
   try {
-    let Id                       = req.params.id;
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let pic_image                = req.body.pic_image;
+    let Id = req.params.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let pic_image = req.body.pic_image;
     // Validfation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking if error exist
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors  = errors;
-          req.session.success = false;
-          res.redirect(`/access/edit_women_product/${Id}`);
-    }else {
-          await  Product.update({_id: Id }, { 
-          ProductName: product_name,
-          ProductCategory: category,
-          ProductPrice: price,
-          ProductSize: size,
-          SKUNumber: sku,
-          ProductBrand: brand,
-          ProductDescription: description,
-          ProductImage: product_image     
-  },  (err) => {
-  if(err) throw err; 
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Product updated successfully'
-    }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect(`/access/edit_women_product/${Id}`);
+    } else {
+      await Product.update({ _id: Id }, {
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Product updated successfully'
+        }
         res.location('/access/women');
-        res.redirect('/access/women'); 
+        res.redirect('/access/women');
         fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-          if(err) throw err;
+          if (err) throw err;
           console.log('deleted successfully');
-         });
-});   
-}
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
   }
- });
+});
 
 
 
-  /**
- * UPDATING SINGLE PRODUCT FOR SHOES CATEGORY
- */
+/**
+* UPDATING SINGLE PRODUCT FOR SHOES CATEGORY
+*/
 router.post('/product/shoes/:id', upload.single('product_image'), async (req, res, next) => {
   try {
-    let Id                       = req.params.id;
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let pic_image                = req.body.pic_image;
+    let Id = req.params.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let pic_image = req.body.pic_image;
     // Validfation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking if error exist
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors  = errors;
-          req.session.success = false;
-          res.redirect(`/access/edit_shoes_product/${Id}`);
-    }else {
-          await  Product.update({_id: Id }, { 
-          ProductName: product_name,
-          ProductCategory: category,
-          ProductPrice: price,
-          ProductSize: size,
-          SKUNumber: sku,
-          ProductBrand: brand,
-          ProductDescription: description,
-          ProductImage: product_image     
-  },  (err) => {
-  if(err) throw err; 
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Product updated successfully'
-    }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect(`/access/edit_shoes_product/${Id}`);
+    } else {
+      await Product.update({ _id: Id }, {
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Product updated successfully'
+        }
         res.location('/access/shoes');
-        res.redirect('/access/shoes'); 
+        res.redirect('/access/shoes');
         fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-          if(err) throw err;
+          if (err) throw err;
           console.log('deleted successfully');
-         });
-});   
-}
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
   }
- });
+});
 
 
-   /**
- * UPDATING SINGLE PRODUCT FOR JEWLYRY CATEGORY
- */
+/**
+* UPDATING SINGLE PRODUCT FOR JEWLYRY CATEGORY
+*/
 router.post('/product/jewlyry/:id', upload.single('product_image'), async (req, res, next) => {
   try {
-    let Id                       = req.params.id;
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let pic_image                = req.body.pic_image;
+    let Id = req.params.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let pic_image = req.body.pic_image;
     // Validfation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking if error exist
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors  = errors;
-          req.session.success = false;
-          res.redirect(`/access/edit_jewlyry_product/${Id}`);
-    }else {
-          await  Product.update({_id: Id }, { 
-          ProductName: product_name,
-          ProductCategory: category,
-          ProductPrice: price,
-          ProductSize: size,
-          SKUNumber: sku,
-          ProductBrand: brand,
-          ProductDescription: description,
-          ProductImage: product_image     
-  },  (err) => {
-  if(err) throw err; 
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Product updated successfully'
-    }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect(`/access/edit_jewlyry_product/${Id}`);
+    } else {
+      await Product.update({ _id: Id }, {
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Product updated successfully'
+        }
         res.location('/access/jewlyry');
-        res.redirect('/access/jewlyry'); 
+        res.redirect('/access/jewlyry');
         fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-          if(err) throw err;
+          if (err) throw err;
           console.log('deleted successfully');
-         });
-});   
-}
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
   }
- });
+});
 
 
 
-    /**
- * UPDATING SINGLE PRODUCT FOR PHONES AND TABLETS CATEGORY
- */
+/**
+* UPDATING SINGLE PRODUCT FOR PHONES AND TABLETS CATEGORY
+*/
 router.post('/product/phones/:id', upload.single('product_image'), async (req, res, next) => {
   try {
-    let Id                       = req.params.id;
-    let product_name             = req.body.productName;
-    let category                 = req.body.category;
-    let price                    = req.body.Price;
-    let size                     = req.body.size;
-    let sku                      = req.body.sku;
-    let brand                    = req.body.brand;
-    let description              = req.body.Description;
-    let product_image_file       = req.file.originalname;
-    let product_image            = product_image_file;
-    let pic_image                = req.body.pic_image;
+    let Id = req.params.id;
+    let product_name = req.body.productName;
+    let category = req.body.category;
+    let price = req.body.Price;
+    let size = req.body.size;
+    let sku = req.body.sku;
+    let brand = req.body.brand;
+    let description = req.body.Description;
+    let product_image_file = req.file.originalname;
+    let product_image = product_image_file;
+    let pic_image = req.body.pic_image;
     // Validfation point
-    req.checkBody('productName', 'Product name is required').isLength({min:4, max:40}).withMessage('Product name Must be at least 4 chars long');
+    req.checkBody('productName', 'Product name is required').isLength({ min: 4, max: 40 }).withMessage('Product name Must be at least 4 chars long');
     req.checkBody('category', 'Category name is required').notEmpty();
     req.checkBody('Price', 'Price field is required').notEmpty();;
-    req.checkBody('size', 'Product size is required').isLength({min:1, max:50}).withMessage('Size Must be at least 1 chars long');
+    req.checkBody('size', 'Product size is required').isLength({ min: 1, max: 50 }).withMessage('Size Must be at least 1 chars long');
     req.checkBody('sku', 'SKU number is required').notEmpty();;
-    req.checkBody('brand', 'Product brand is required').isLength({min:4, max:50}).withMessage('Product brand Must be at least 4 chars long');
-    req.checkBody('Description', 'Product description is required').isLength({min:4, max:500}).withMessage('Description Must be at least 4 chars long');
+    req.checkBody('brand', 'Product brand is required').isLength({ min: 4, max: 50 }).withMessage('Product brand Must be at least 4 chars long');
+    req.checkBody('Description', 'Product description is required').isLength({ min: 4, max: 500 }).withMessage('Description Must be at least 4 chars long');
     req.checkBody('product_image', 'Product image is required');
     // Checking if error exist
     const errors = req.validationErrors();
-      if (errors) {
-          req.session.errors  = errors;
-          req.session.success = false;
-          res.redirect(`/access/edit_phones_product/${Id}`);
-    }else {
-          await  Product.update({_id: Id }, { 
-          ProductName: product_name,
-          ProductCategory: category,
-          ProductPrice: price,
-          ProductSize: size,
-          SKUNumber: sku,
-          ProductBrand: brand,
-          ProductDescription: description,
-          ProductImage: product_image     
-  },  (err) => {
-  if(err) throw err; 
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Product updated successfully'
-    }
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect(`/access/edit_phones_product/${Id}`);
+    } else {
+      await Product.update({ _id: Id }, {
+        ProductName: product_name,
+        ProductCategory: category,
+        ProductPrice: price,
+        ProductSize: size,
+        SKUNumber: sku,
+        ProductBrand: brand,
+        ProductDescription: description,
+        ProductImage: product_image
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Product updated successfully'
+        }
         res.location('/access/jewlyry');
-        res.redirect('/access/phones'); 
+        res.redirect('/access/phones');
         fs.unlink(`./public/uploads/${pic_image}`, (err) => {
-          if(err) throw err;
+          if (err) throw err;
           console.log('deleted successfully');
-         });
-});   
-}
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
   }
- });
- /**
-  *  SECTION FOR ADMINS LOGIN AND LOGOUT LOGIC USING PASSPORT AND JWT
-  */
- passport.use(new LocalStrategy(  {
-      usernameField: 'email',
-      passwordField: 'password'
- },
-  function(email, password, done) {
-   try {
-    Admin.findOne({ Email: email }, function (err, admin) {
-      if (err) { return done(err); 
-      }
-      if (!admin) { 
-     return done (null, false);
-      }
-       Admin.verifyPassword(password, admin.Password, (err, isMatch) => {
-         if(err) return done(err);
-         if(!isMatch) {
-           return done(null, false);
-         }
-         return done(null, admin); 
-       } ); 
-    });
-   } catch (err) {
-     console.log(err);     
-   }
+});
+/**
+ *  SECTION FOR ADMINS LOGIN AND LOGOUT LOGIC USING PASSPORT AND JWT
+ */
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password'
+},
+  function (email, password, done) {
+    try {
+      Admin.findOne({ Email: email }, function (err, admin) {
+        if (err) {
+          return done(err);
+        }
+        if (!admin) {
+          return done(null, false);
+        }
+        Admin.verifyPassword(password, admin.Password, (err, isMatch) => {
+          if (err) return done(err);
+          if (!isMatch) {
+            return done(null, false);
+          }
+          return done(null, admin);
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 ));
 
 
- router.post('/login', passport.authenticate('local', { failureRedirect: '/access/', successRedirect: '/access/dashboard',
-   //failureFlash: true,
-      }), function(req,  res) {
+router.post('/login', passport.authenticate('local', {
+  failureRedirect: '/access/', successRedirect: '/access/dashboard',
+  //failureFlash: true,
+}), function (req, res) {
 
 });
 
 // Route Middleware
-function ensureAuthenicated(req, res, next) {  
+function ensureAuthenicated(req, res, next) {
   if (req.isAuthenticated()) {
-      return next(); 
-    }
-      res.redirect('/access/');
+    return next();
+  }
+  res.redirect('/access/');
 }
 
 //logout function
-router.post('/logout', function(req, res) {
+router.post('/logout', function (req, res) {
   req.logout();
   res.redirect('/access/');
 });
 
-passport.serializeUser(function(admin, done) {
+passport.serializeUser(function (admin, done) {
   done(null, admin.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  Admin.getAdminById(id, function(err, admin) {
-    done(err, admin); 
+passport.deserializeUser(function (id, done) {
+  Admin.getAdminById(id, function (err, admin) {
+    done(err, admin);
   });
 });
 
 
 
 // Updating Admisn Profile
-router.post('/admin/update/:id', async(req, res, next) => {
+router.post('/admin/update/:id', async (req, res, next) => {
   try {
-    let first_name                    = req.body.first_name;
-    let last_name                     = req.body.last_name;
-    let username                      = req.body.username;
-     let id                           = req.params.id;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let username = req.body.username;
+    let id = req.params.id;
     // Validation form inputs
-    req.checkBody('first_name', 'First name field is required').notEmpty().isLength({min:4, max:50}).withMessage('First Name Must be at least 4 chars long');
-    req.checkBody('last_name', 'Last name field is required').notEmpty().isLength({min:4, max:50}).withMessage('Last Name Must be at least 4 chars long');
- //   req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
-    req.checkBody('username', 'Username field is required').notEmpty().isLength({min:4, max:50}).withMessage('Username Must be at least 4 chars long');
-    
-  // Checking if errors exist
-    let errors = req.validationErrors();
-      if (errors) {
-          req.session.errors = errors;
-          req.session.success = false;
-          res.redirect('/access/user-profile');
-    }else {
-            // Checking if Admin already exist
-            await  Admin.update({_id: id }, { 
-              FirstName: first_name,
-              LastName: last_name,
-              Username: username,  
-      },  (err) => {
-      if(err) throw err; 
-          req.session.message = {
-            type: 'success',
-            intro: '',
-            message: 'Profile updated successfully'
-        }
-            res.location('/access/user-profile');
-            res.redirect('/access/user-profile'); 
-      }); 
-    }  
-    } catch (error) {
-      console.log(error);
-   }
-  });
-   // Ending of code to update new admins
-  
+    req.checkBody('first_name', 'First name field is required').notEmpty().isLength({ min: 4, max: 50 }).withMessage('First Name Must be at least 4 chars long');
+    req.checkBody('last_name', 'Last name field is required').notEmpty().isLength({ min: 4, max: 50 }).withMessage('Last Name Must be at least 4 chars long');
+    //   req.checkBody('user_email', 'Email field is required').isEmail().withMessage('Please provide a valid mail');
+    req.checkBody('username', 'Username field is required').notEmpty().isLength({ min: 4, max: 50 }).withMessage('Username Must be at least 4 chars long');
 
-   // ADmin change password part
-   router.post('/admin/changePassword/', (req, res, next)=> {
-    let current_password = req.body.current_password;
-    let new_password = req.body.new_password;
-    let confirmed_newPassword = req.body.confirmed_newPassword;
-    let id = req.user._id;
-    req.checkBody('current_password', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
-    req.checkBody('new_password', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
-    req.checkBody('new_password', 'password is required').notEmpty().equals(confirmed_newPassword).withMessage('Password confirmation fails');
-
-    //Checking for Errors
+    // Checking if errors exist
     let errors = req.validationErrors();
     if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;     
-          res.location('/access/user-change-password');
-          res.redirect('/access/user-change-password');
-    }else {
-      Admin.findOne({_id: id}, (err, admin) =>{
-        if(err) throw err;
-        if(!admin) {
-          return console.log('unknown Admin');
+      req.session.errors = errors;
+      req.session.success = false;
+      res.redirect('/access/user-profile');
+    } else {
+      // Checking if Admin already exist
+      await Admin.update({ _id: id }, {
+        FirstName: first_name,
+        LastName: last_name,
+        Username: username,
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Profile updated successfully'
         }
-        Admin.comparePassword(current_password, admin.Password, (err, isMatch) => {
-          if(err) throw err;
-          if(isMatch) {
-            Admin.comparePassword(new_password, admin.Password, (err, isMatch) => {
-              if(err) throw err;
-              if (isMatch) {
-                req.session.message = {
-                  type: 'error',
-                  intro: '',
-                  message: 'New password can not be the same with current password'
+        res.location('/access/user-profile');
+        res.redirect('/access/user-profile');
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+// Ending of code to update new admins
+
+
+// ADmin change password part
+router.post('/admin/changePassword/', (req, res, next) => {
+  let current_password = req.body.current_password;
+  let new_password = req.body.new_password;
+  let confirmed_newPassword = req.body.confirmed_newPassword;
+  let id = req.user._id;
+  req.checkBody('current_password', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('password Must be at least 8 chars long');
+  req.checkBody('new_password', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('Confirm password Must be at least 8 chars long');
+  req.checkBody('new_password', 'password is required').notEmpty().equals(confirmed_newPassword).withMessage('Password confirmation fails');
+
+  //Checking for Errors
+  let errors = req.validationErrors();
+  if (errors) {
+    req.session.errors = errors;
+    req.session.success = false;
+    res.location('/access/user-change-password');
+    res.redirect('/access/user-change-password');
+  } else {
+    Admin.findOne({ _id: id }, (err, admin) => {
+      if (err) throw err;
+      if (!admin) {
+        return console.log('unknown Admin');
+      }
+      Admin.comparePassword(current_password, admin.Password, (err, isMatch) => {
+        if (err) throw err;
+        if (isMatch) {
+          Admin.comparePassword(new_password, admin.Password, (err, isMatch) => {
+            if (err) throw err;
+            if (isMatch) {
+              req.session.message = {
+                type: 'error',
+                intro: '',
+                message: 'New password can not be the same with current password'
               }
-                  res.location('/access/user-change-password');
-                  res.redirect('/access/user-change-password'); 
-              }
-              if (!isMatch) {
-                bcrypt.hash(new_password, 10, async(err, hash) => {
-                  if(err) throw err;
-                    Admin.update({_id: id}, {
-                    Password: hash
-                },(err) => {
-                  if(err) throw err;
+              res.location('/access/user-change-password');
+              res.redirect('/access/user-change-password');
+            }
+            if (!isMatch) {
+              bcrypt.hash(new_password, 10, async (err, hash) => {
+                if (err) throw err;
+                Admin.update({ _id: id }, {
+                  Password: hash
+                }, (err) => {
+                  if (err) throw err;
                   req.session.message = {
                     type: 'success',
                     intro: '',
                     message: 'Password changed successfully'
-                }
-                    res.location('/access/');
-                    res.redirect('/access/');              
+                  }
+                  res.location('/access/');
+                  res.redirect('/access/');
                 });
               });
-                
-              }
-            });          
-          }           
-          if (!isMatch) {
-            req.session.message = {
-              type: 'error',
-              intro: '',
-              message: 'Current password is not correct'
+
+            }
+          });
+        }
+        if (!isMatch) {
+          req.session.message = {
+            type: 'error',
+            intro: '',
+            message: 'Current password is not correct'
           }
-              res.location('/access/user-change-password');
-              res.redirect('/access/user-change-password'); 
-          }
-        });
+          res.location('/access/user-change-password');
+          res.redirect('/access/user-change-password');
+        }
       });
-    }
-  });
+    });
+  }
+});
 
 // FORGOT PASSWORD FOR ADMIN
 router.post('/forgot', (req, res, next) => {
@@ -1231,27 +1233,27 @@ router.post('/forgot', (req, res, next) => {
             type: 'error',
             intro: '',
             message: 'No account with that email address exists.'
-        }
+          }
           return res.redirect('/access/');
         }
-            Admin.update({ Email: req.body.email }, {
-                ResetPasswordToken: token,
-                ResetPasswordExpires: Date.now() + 3600000 // 1 hour
-            },(err) => {
-              if(err) throw err;
-              req.session.message = {
-                type: 'success',
-                intro: '',
-                message: 'An e-mail has been sent to ' + req.body.email + ' with further instructions.'
+        Admin.update({ Email: req.body.email }, {
+          ResetPasswordToken: token,
+          ResetPasswordExpires: Date.now() + 3600000 // 1 hour
+        }, (err) => {
+          if (err) throw err;
+          req.session.message = {
+            type: 'success',
+            intro: '',
+            message: 'An e-mail has been sent to ' + req.body.email + ' with further instructions.'
+          }
+          let smtpTrans = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+              user: process.env.APP_EMAIL,
+              pass: process.env.APP_PASSWORD,
             }
-            let smtpTrans = nodemailer.createTransport({
-              service: 'Gmail', 
-              auth: {
-               user: process.env.APP_EMAIL,
-               pass: process.env.APP_PASSWORD,
-             }
-           });
-           let mailOptions = {
+          });
+          let mailOptions = {
             to: req.body.email,
             from: process.env.APP_EMAIL,
             subject: 'NodeStore Password Reset',
@@ -1261,18 +1263,18 @@ router.post('/forgot', (req, res, next) => {
               'If you did not request this, please ignore this email and your password will remain unchanged.\n'
           };
           smtpTrans.sendMail(mailOptions, (err) => {
-            if(err) throw err;
+            if (err) throw err;
             console.log("message Sent Successfully!!" + req.body.email);
           });
-            return res.redirect('/access/');
-          });
+          return res.redirect('/access/');
+        });
       });
     },
-//     function(token, admin, done) {
-//         smtpTrans.sendMail(mailOptions, (err) =>  {
-//           if(err) throw err;
-// });
-// }
+    //     function(token, admin, done) {
+    //         smtpTrans.sendMail(mailOptions, (err) =>  {
+    //           if(err) throw err;
+    // });
+    // }
   ], (err) => {
     console.log('this err' + ' ' + err)
     res.redirect('/');
@@ -1281,89 +1283,89 @@ router.post('/forgot', (req, res, next) => {
 
 
 //Form to reset password
-router.get('/reset/:token', async(req, res, next) => {
+router.get('/reset/:token', async (req, res, next) => {
   await Admin.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin) => {
-    if(err) throw err;
-//      console.log(admin);
+    if (err) throw err;
+    //      console.log(admin);
     if (!admin) {
       req.session.message = {
         type: 'error',
         intro: '',
         message: 'Password reset token is invalid or has expired.'
-    }
+      }
       return res.redirect('/access/');
     }
-   let token = req.params.token;
-    res.render('admin/reset', { title: 'Forgot password', layout:'loginLayout.hbs', token: token,  admin: req.admin, success: req.session.success, errors: req.session.errors});
-    req.session.errors = null; 
+    let token = req.params.token;
+    res.render('admin/reset', { title: 'Forgot password', layout: 'loginLayout.hbs', token: token, admin: req.admin, success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
   });
 });
 
 
 // Logic to reset password for admin
-router.post('/reset/:token', async(req, res, next) => {
-try {
-  let password = req.body.password;
-  let Cpassword = req.body.Cpassword;
-  let token = req.params.token;
-  req.checkBody('password', 'This field is required').notEmpty().isLength({min:8, max:50}).withMessage('password Must be at least 8 chars long');
-  req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({min:8, max:50}).withMessage('Confirm password Must be at least 8 chars long');
-  req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
-  let errors = req.validationErrors();
-  if (errors) {
+router.post('/reset/:token', async (req, res, next) => {
+  try {
+    let password = req.body.password;
+    let Cpassword = req.body.Cpassword;
+    let token = req.params.token;
+    req.checkBody('password', 'This field is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('password Must be at least 8 chars long');
+    req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('Confirm password Must be at least 8 chars long');
+    req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
+    let errors = req.validationErrors();
+    if (errors) {
       req.session.errors = errors;
-      req.session.success = false;     
+      req.session.success = false;
       return res.redirect(`/access/reset/${token}`);
-  } else {
-  await  Admin.findOne({ ResetPasswordToken: token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin, next) => {
-    if (err) throw err;
-    if(!admin) {
-      req.session.message = {
-        type: 'error',
-        intro: '',
-        message: 'Password reset token is invalid or has expired.'
-    }
-         return   res.redirect('/access/');
-    }
-    // if admin exist
-    bcrypt.hash(password, 10, (err, hash) => {
-      if (err) throw err;
-    // console.log('this is the has' + hash);
-      Admin.update({ ResetPasswordToken: token }, {
-        Password: hash,
-        PasswordUpdateAt: Date.now(),
-    },(err) => {
-      if(err) throw err;
-      let smtpTrans = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: process.env.APP_EMAIL,
-          pass: process.env.APP_PASSWORD
+    } else {
+      await Admin.findOne({ ResetPasswordToken: token, ResetPasswordExpires: { $gt: Date.now() } }, (err, admin, next) => {
+        if (err) throw err;
+        if (!admin) {
+          req.session.message = {
+            type: 'error',
+            intro: '',
+            message: 'Password reset token is invalid or has expired.'
+          }
+          return res.redirect('/access/');
         }
+        // if admin exist
+        bcrypt.hash(password, 10, (err, hash) => {
+          if (err) throw err;
+          // console.log('this is the has' + hash);
+          Admin.update({ ResetPasswordToken: token }, {
+            Password: hash,
+            PasswordUpdateAt: Date.now(),
+          }, (err) => {
+            if (err) throw err;
+            let smtpTrans = nodemailer.createTransport({
+              service: 'Gmail',
+              auth: {
+                user: process.env.APP_EMAIL,
+                pass: process.env.APP_PASSWORD
+              }
+            });
+            let mailOptions = {
+              to: admin.Email,
+              from: process.env.APP_EMAIL,
+              subject: 'Your password has been changed',
+              text: 'Hello,\n\n' +
+                ' - This is a confirmation that the password for your account ' + admin.Email + ' has just been changed.\n'
+            };
+            smtpTrans.sendMail(mailOptions, (err) => {
+              if (err) throw err;
+              req.session.message = {
+                type: 'success',
+                intro: '',
+                message: 'Password reset successfully.'
+              }
+              return res.redirect('/access/');
+            });
+          });
+        });
       });
-      let mailOptions = {
-        to: admin.Email,
-        from: process.env.APP_EMAIL,
-        subject: 'Your password has been changed',
-        text: 'Hello,\n\n' +
-          ' - This is a confirmation that the password for your account ' + admin.Email + ' has just been changed.\n'
-      }; 
-    smtpTrans.sendMail(mailOptions, (err) => {
-      if(err) throw err;
-      req.session.message = {
-        type: 'success',
-        intro: '',
-        message: 'Password reset successfully.'
     }
-      return res.redirect('/access/');
-    });
-  });
-});
-});
-  } 
-} catch (error) {
-  console.log(error);
-}
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 //redircet to 404 page
