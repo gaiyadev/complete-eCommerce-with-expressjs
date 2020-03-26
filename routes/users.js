@@ -1,12 +1,12 @@
 require('dotenv').config();
+const async = require("async");
 var csrf = require('csurf')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const config = require('config');
 const auth = require('../middleware/routesMiddleware');
 const jwt = require('jsonwebtoken');
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
+
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
 var express = require('express');
@@ -24,26 +24,168 @@ router.get('/forgot-password', csrfProtection, (req, res, next) => {
   }
 });
 
+
 //.. Submit email for link to reset password
 router.post('/forgot', (req, res, next) => {
-
+  async.waterfall([
+    (done) => {
+      crypto.randomBytes(20, (err, buf) => {
+        let token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    (token, done) => {
+      User.findOne({ Email: req.body.email }, (err, user) => {
+        if (!user) {
+          req.session.message = {
+            type: 'error',
+            intro: '',
+            message: 'No account with that email address exists.'
+          }
+          return res.redirect('/users/forgot-password');
+        }
+        User.update({ Email: req.body.email }, {
+          ResetPasswordToken: token,
+          ResetPasswordExpires: Date.now() + 3600000 // 1 hour
+        }, (err) => {
+          if (err) throw err;
+          req.session.message = {
+            type: 'success',
+            intro: '',
+            message: 'An e-mail has been sent to ' + req.body.email + ' with further instructions.'
+          }
+          let smtpTrans = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+              user: process.env.APP_EMAIL,
+              pass: process.env.APP_PASSWORD,
+            }
+          });
+          let mailOptions = {
+            to: req.body.email,
+            from: process.env.APP_EMAIL,
+            subject: 'NodeStore Password Reset',
+            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+              'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+              'http://' + req.headers.host + '/access/reset/' + token + '\n\n' +
+              'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+          };
+          smtpTrans.sendMail(mailOptions, (err) => {
+            if (err) throw err;
+            console.log("message Sent Successfully!!" + req.body.email);
+          });
+          return res.redirect('/users/forgot-password');
+        });
+      });
+    },
+    //     function(token, user, done) {
+    //         smtpTrans.sendMail(mailOptions, (err) =>  {
+    //           if(err) throw err;
+    // });
+    // }
+  ], (err) => {
+    console.log('this err' + ' ' + err)
+    res.redirect('/');
+  });
 });
 
-//.. Reset password form
-router.get('/reset-password', csrfProtection, (req, res, next) => {
-  try {
-    res.render('pages/reset-password', { title: 'Reset Password', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+
+//Form to reset password form mail (LINK)
+router.get('/reset-password/:token', csrfProtection, async (req, res, next) => {
+  await User.findOne({ ResetPasswordToken: req.params.token, ResetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
+    if (err) throw err;
+    //      console.log(admin);
+    if (!user) {
+      req.session.message = {
+        type: 'error',
+        intro: '',
+        message: 'Password reset token is invalid or has expired.'
+      }
+      return res.redirect('/users/login');
+    }
+    let token = req.params.token;
+    res.render('pages/reset-password', { title: 'Forgot password', csrfToken: req.csrfToken(), token: token, user: req.user, success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
-  } catch (err) {
-    console.log(err);
+  });
+});
+
+
+//logging out
+router.post('/logout', (req, res) => {
+  const token = req.cookies.token;
+  this.delete
+  console.log(token);
+  //res.clearCookie(token);
+  return res.redirect('/users/login');
+});
+
+
+// Logic to reset password for user
+router.post('/reset/:token', async (req, res, next) => {
+  try {
+    let password = req.body.password;
+    let Cpassword = req.body.Cpassword;
+    let token = req.params.token;
+    req.checkBody('password', 'This field is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('password Must be at least 8 chars long');
+    req.checkBody('Cpassword', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('Confirm password Must be at least 8 chars long');
+    req.checkBody('password', 'password is required').notEmpty().equals(Cpassword).withMessage('Password confirmation fails');
+    let errors = req.validationErrors();
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      return res.redirect(`/users/reset-password/${token}`);
+    } else {
+      await User.findOne({ ResetPasswordToken: token, ResetPasswordExpires: { $gt: Date.now() } }, (err, user, next) => {
+        if (err) throw err;
+        if (!user) {
+          req.session.message = {
+            type: 'error',
+            intro: '',
+            message: 'Password reset token is invalid or has expired.'
+          }
+          return res.redirect('/users/login');
+        }
+        // if admin exist
+        bcrypt.hash(password, 10, (err, hash) => {
+          if (err) throw err;
+          // console.log('this is the has' + hash);
+          User.update({ ResetPasswordToken: token }, {
+            Password: hash,
+            PasswordUpdateAt: Date.now(),
+          }, (err) => {
+            if (err) throw err;
+            let smtpTrans = nodemailer.createTransport({
+              service: 'Gmail',
+              auth: {
+                user: process.env.APP_EMAIL,
+                pass: process.env.APP_PASSWORD
+              }
+            });
+            let mailOptions = {
+              to: user.Email,
+              from: process.env.APP_EMAIL,
+              subject: 'Your password has been changed',
+              text: 'Hello,\n\n' +
+                ' - This is a confirmation that the password for your account ' + user.Email + ' has just been changed.\n'
+            };
+            smtpTrans.sendMail(mailOptions, (err) => {
+              if (err) throw err;
+              req.session.message = {
+                type: 'success',
+                intro: '',
+                message: 'Password reset successfully.'
+              }
+              return res.redirect('/access/');
+            });
+          });
+        });
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
-
-// Reseting the pasword 
-router.post('/reset', (req, res, next) => {
-
-});
 
 // getting users login form
 router.get('/login', csrfProtection, (req, res, next) => {
@@ -62,9 +204,7 @@ router.get('/update', csrfProtection, auth, (req, res, next) => {
     const username = name.toUpperCase();
     res.render('pages/update', { title: 'Update Profile', layout: 'userLayout', user: user, csrfToken: req.csrfToken(), username: username, success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
-
   });
-
 });
 
 //..Updating users
@@ -72,7 +212,7 @@ router.post('/update/:id', async (req, res, next) => {
   try {
     let id = req.params.id;
     let surname = req.body.surname;
-    let otherName = req.body.otherName;
+    let OtherName = req.body.otherName;
     let phone = req.body.phone;
     let code = req.body.code;
     // let email = req.body.email;
@@ -105,7 +245,7 @@ router.post('/update/:id', async (req, res, next) => {
       // Checking if Admin already exist
       await User.update({ _id: id }, {
         Surname: surname,
-        OtherName: otherName,
+        OtherName: OtherName,
         Phone: phone,
         Code: code,
         State: state,
@@ -238,17 +378,6 @@ router.get('/signup', csrfProtection, (req, res, next) => {
   res.render('pages/signup', { title: 'Create an Account', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 
-});
-
-
-
-//logging out
-router.post('/logout', (req, res) => {
-  const token = req.cookies.token;
-  this.delete
-  console.log(token);
-  //res.clearCookie(token);
-  return res.redirect('/users/login');
 });
 
 
@@ -389,3 +518,10 @@ router.post('/signup', (req, res, next) => {
 
 
 module.exports = router;
+
+
+
+
+
+
+

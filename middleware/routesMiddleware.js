@@ -7,7 +7,6 @@ module.exports = function (req, res, next) {
     const token = req.cookies.token;
     if (!token) {
         return res.redirect('/users/login');
-
     }
     let decoded;
     try {
@@ -18,11 +17,8 @@ module.exports = function (req, res, next) {
             return res.redirect('/users/login');
         }
         return res.redirect('/users/login');
-
     }
     next();
-    //res.send(`welcome${payload._id}`);
-
 }
 
 
