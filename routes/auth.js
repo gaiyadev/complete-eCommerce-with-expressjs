@@ -12,8 +12,8 @@ const path = require('path');
 const fs = require('fs');
 const Admin = require('../models/admin');
 const Product = require('../models/product');
+const csrfProtection = csrf({ cookie: true });
 var express = require('express');
-var csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
 /* Admin login page. */

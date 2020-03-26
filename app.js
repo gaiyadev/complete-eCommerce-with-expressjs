@@ -24,24 +24,24 @@ var app = express();
 
 
 // Template engine
-app.engine( 'hbs', hbs( {
+app.engine('hbs', hbs({
   extname: 'hbs',
   defaultLayout: 'layout',
   layoutsDir: __dirname + '/views/layouts/',
   partialsDir: __dirname + '/views/partials/',
   helpers: {
     formatDate: function (date, format) {
-        return moment().format('MMMM Do YYYY, h:mm:ss a'); // March 10th 2020, 8:56:42 am
+      return moment().format('MMMM Do YYYY, h:mm:ss a'); // March 10th 2020, 8:56:42 am
     },
-    increment: function(index) {
+    increment: function (index) {
       index++;
       return index;
     },
-    count: function(index) {
+    count: function (index) {
       index++;
       return index;
     }
-}
+  }
 }));
 
 
@@ -57,23 +57,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session middleware
 app.use(ExpressSession({
-  secret: 'max', 
-  saveUninitialized: false, 
+  secret: 'max',
+  saveUninitialized: false,
   resave: false,
-  cookie:{
+  cookie: {
     maxAge: 60000000
   }
- }));
- app.use(passport.initialize());
- app.use(passport.session());
- 
- // Express vaidator middleware
- app.use(expressValidator());
- app.use(flash());
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Express vaidator middleware
+app.use(expressValidator());
+app.use(flash());
 app.use(expressFlash()); //flash message
 
 // Custom flash middleware 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
   // if there's a flash message in the session request, make it available in the response, then delete it
   res.locals.message = req.session.message;
   delete req.session.message;
@@ -82,9 +82,9 @@ app.use(function(req, res, next){
 
 
 //app.use(validator());
-app.use(function(req, res, next) {
-res.locals.messages = require('express-messages')(req, res);
- next();
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
 });
 
 
@@ -93,12 +93,12 @@ app.use('/users', usersRouter);
 app.use('/access', adminRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

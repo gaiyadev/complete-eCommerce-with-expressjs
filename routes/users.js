@@ -3,14 +3,14 @@ var csrf = require('csurf')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const config = require('config');
-//const auth = require('../middleware/routesMiddleware');
+const auth = require('../middleware/routesMiddleware');
 const jwt = require('jsonwebtoken');
 // const passport = require('passport');
 // const LocalStrategy = require('passport-local').Strategy;
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
 var express = require('express');
-var csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
 // const auth = function (req, res, next) {
@@ -21,7 +21,7 @@ var router = express.Router();
 //     if (token == null) {
 //       return res.redirect('/users/login');
 //     } else {
-//       jwt.verify(token, process.env.APP_SECRET_KEY, (err, user) => {
+//       jwt.verify(req.body.token, process.env.APP_SECRET_KEY, (err, user) => {
 //         if (err) throw err;
 //         req.user = user;
 //         next();
@@ -32,6 +32,7 @@ var router = express.Router();
 //   }
 // }
 
+//.. Get forgot password form
 router.get('/forgot-password', csrfProtection, (req, res, next) => {
   try {
     res.render('pages/forgot-password', { title: 'Forgot Password', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
@@ -41,12 +42,12 @@ router.get('/forgot-password', csrfProtection, (req, res, next) => {
   }
 });
 
-
+//.. Submit email for link to reset password
 router.post('/forgot', (req, res, next) => {
 
 });
 
-
+//.. Reset password form
 router.get('/reset-password', csrfProtection, (req, res, next) => {
   try {
     res.render('pages/reset-password', { title: 'Reset Password', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
@@ -56,6 +57,8 @@ router.get('/reset-password', csrfProtection, (req, res, next) => {
   }
 });
 
+
+// Reseting the pasword 
 router.post('/reset', (req, res, next) => {
 
 });
@@ -67,12 +70,16 @@ router.get('/login', csrfProtection, (req, res, next) => {
 
 });
 
+
+//.. Updating user info
 router.get('/update', (req, res, next) => {
   res.render('pages/update', { title: 'Update Profile', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
 
 });
 
+
+//.. Users change password
 router.get('/change', (req, res, next) => {
   res.render('pages/change-password', { title: 'Change Password', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
@@ -81,9 +88,9 @@ router.get('/change', (req, res, next) => {
 
 
 // getting users home
-router.get('/home', csrfProtection, (req, res, next) => {
+router.get('/home', csrfProtection, auth, (req, res, next) => {
   try {
-    res.render('pages/home', { title: 'User Dashboard', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+    res.render('pages/home', { title: 'User Dashboard', layout: 'userLayout', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
     // console.log(';decoded' + decoded);   
   } catch (err) {
@@ -105,6 +112,8 @@ router.post('/logout', (req, res) => {
   console.log('ss');
 });
 
+
+//User Login route
 router.post('/login', (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -144,23 +153,14 @@ router.post('/login', (req, res, next) => {
               if (err) throw err;
               console.log(token);
               // res.send(token);
-              res.headers('x-auth-token', token);
+              res.header('x-auth-token', token);
               return res.redirect('/users/home');
             });
-
-
           }
-
         });
-
-
       }
     });
-
   }
-
-
-
 });
 
 
@@ -235,6 +235,7 @@ router.post('/signup', (req, res, next) => {
           message: 'Account created successfully'
         }
         const token = User.generateAuthToken();
+        res.header('x-auth-token', token);
         console.log('signup' + token);
         return res.redirect('/users/login');
       });

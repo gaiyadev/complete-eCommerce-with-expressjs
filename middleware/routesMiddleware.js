@@ -1,6 +1,18 @@
-//const jwt = require('jsonwebtoken');
-//require('dotenv').config();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
+module.exports = function (req, res, next) {
+    try {
+        const token = req.headers('x-auth-token');
+        const decoded = jwt.verify(token, process.env.APP_SECRET_KEY);
+        req.user = decoded;
+        next();
+
+    } catch (err) {
+        return res.redirect('/users/login');
+    }
+
+}
 
 
 // module.exports = function(req, res, next) {
