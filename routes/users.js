@@ -85,7 +85,7 @@ router.get('/update', csrfProtection, auth, (req, res, next) => {
 
 });
 
-
+//..Updating users
 router.post('/update/:id', async (req, res, next) => {
   try {
     let id = req.params.id;
@@ -102,9 +102,9 @@ router.post('/update/:id', async (req, res, next) => {
     // Validation form inputs
     req.checkBody('surname', 'Surname is required').isLength({ min: 4, max: 40 }).withMessage('Surname Must be at least 4 chars long');
     req.checkBody('otherName', 'Other Name name is required').isLength({ min: 4, max: 40 }).withMessage('Other Name name Must be at least 4 chars long');
-    req.checkBody('phone', 'Phone number field is required').isMobilePhone().isLength({ min: 11 }).withMessage('Phone Must be 11 chars long');
+    req.checkBody('phone', 'Phone number field is required').notEmpty().isLength({ min: 11 }).withMessage('Phone Must be 11 chars long');
     req.checkBody('lga', 'LGA size is required').isLength({ min: 4, max: 50 }).withMessage('LGA Must be at least 1 chars long');
-    req.checkBody('code', 'Zip Code is required').isNumeric();
+    req.checkBody('code', 'Zip Code is required').notEmpty();
     // req.checkBody('email').isEmail();
     req.checkBody('username', 'Username is required').isLength({ min: 4, max: 50 }).withMessage('Username Must be at least 4 chars long');
     req.checkBody('state', 'State is required').isLength({ min: 2, max: 50 }).withMessage('State Must be at least 4 chars long');
@@ -119,12 +119,18 @@ router.post('/update/:id', async (req, res, next) => {
       req.session.success = false;
       return res.redirect('/users/update');
     } else {
-      return console.log('seeen');
+      // return console.log('seeen');
       // Checking if Admin already exist
       await User.update({ _id: id }, {
-        FirstName: first_name,
-        LastName: last_name,
+        Surname: surname,
+        OtherName: otherName,
+        Phone: phone,
+        Code: code,
+        State: state,
         Username: username,
+        LGA: lga,
+        Address: address,
+        BillingAddress: billAddress,
       }, (err) => {
         if (err) throw err;
         req.session.message = {
@@ -132,8 +138,7 @@ router.post('/update/:id', async (req, res, next) => {
           intro: '',
           message: 'Profile updated successfully'
         }
-        res.location('/access/user-profile');
-        res.redirect('/access/user-profile');
+        return res.redirect('/users/update');
       });
     }
   } catch (error) {
