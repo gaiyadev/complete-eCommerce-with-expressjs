@@ -1,96 +1,128 @@
-<div class="container-fluid"><br/>
-  {{> messages }}
-
-          <div class="span12">
-      <div class="widget-box">
-        {{> messages}}
-        <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
-          <h5 class="title" id="title">Profile infomation</h5>
-        </div>
-        <br/>
-        <div class="widget-content nopadding">
-          {{!-- {{#with user }}             --}}
-          <form action=" " method="post" class="form-horizontal">
-            <div class="control-group">
-              <label class="control-label">Surname :</label>
-              <div class="controls">
-                <input type="text" value="" class="span11" name="surname" id="text" placeholder="Surname" />
-              </div>
-            </div>
-          
-            <div class="control-group">
-              <label class="control-label">Other Name</label>
-              <div class="controls">
-                <input type="text"  class="span11" name="Oname" value="" id="text" placeholder="Enter Name"  />
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label">LGA</label>
-              <div class="controls">
-                <input type="text"  class="span11" name="lga" value="" id="text" placeholder="Enter LGA"  />
-              </div>
-            </div>
-              <div class="control-group">
-              <label class="control-label">Username</label>
-              <div class="controls">
-                <input type="text" value="" class="span11" name="username"  id="text" placeholder="Enter username"  />
-              </div>
-            </div>
-              <div class="control-group">
-              <label class="control-label">Billing Address</label>
-              <div class="controls">
-                <textarea name="address" id="address" cols="30" rows="10"></textarea>              </div>
-            </div>     
-            {{!-- {{/with}} --}}
-            <div class="form-actions">
-              <button type="submit" id="btn" class="btn btn-success">Update</button>
-            </div>
-          </form>
-        </div>
+<div class="container-fluid"><br />
+  <div class="span12">
+    <div class="widget-box">
+      {{> messages}}
+      <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+        <h5 class="title" id="title">Profile infomation</h5>
       </div>
-    </div>
+      <br />
+      <div class="widget-content nopadding">
+        {{#with user }}
+        <form action="/users/update/{{_doc._id}}" method="post" class="form-horizontal">
+          <input type="hidden" name="_csrf" value="{{csrfToken}}">
+          <div class="control-group">
+            <label class="control-label">Surname :</label>
+            <div class="controls">
+              <input type="text" value=" {{_doc.Surname }} " class="span11" name="surname" id="text"
+                placeholder="Surname" />
+            </div>
+          </div>
 
+          <div class="control-group">
+            <label class="control-label">Other Name</label>
+            <div class="controls">
+              <input type="text" class="span11" name="otherName" value=" {{_doc.OtherName }} " id="text"
+                placeholder="Enter Name" />
+            </div>
+          </div>
 
-        </div>
+          <div class="control-group">
+            <label class="control-label">LGA</label>
+            <div class="controls">
+              <input type="text" class="span11" name="lga" value=" {{_doc.LGA }} " id="text" placeholder="Enter LGA" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Username</label>
+            <div class="controls">
+              <input type="tel" value=" {{_doc.Username }} " class="span11" name="username" id="text"
+                placeholder="Enter username" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Zip Code </label>
+            <div class="controls">
+              <input type="tel" value=" {{_doc.Code }} " class="span11" name="code" id="text"
+                placeholder="Enter Code" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Mobile Number</label>
+            <div class="controls">
+              <input type="text" value=" {{_doc.Phone }} " class="span11" name="phone" id="text"
+                placeholder="Enter Mobile" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">State</label>
+            <div class="controls">
+              <input type="text" value=" {{_doc.State }} " class="span11" name="state" id="text"
+                placeholder="Enter State" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label"> Address</label>
+            <div class="controls">
+              <textarea name="address" id="address" cols="30" rows="10"> {{_doc.Address }} </textarea> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Billing Address</label>
+            <div class="controls">
+              <textarea name="billAddress" id="address" cols="30" rows="10"> {{_doc.BillingAddress }} </textarea>
+            </div>
+          </div>
+          {{/with}}
+          <div class="form-actions">
+            <button type="submit" id="btn" class="btn btn-success">Update</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
+
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 
- 
+
 <!--end-main-container-part-->
 <style>
-       #text {
-	height: 44px;
-	border: none;
-	padding: 0 18px;
+  #text {
+    height: 44px;
+    border: none;
+    padding: 0 18px;
     width: 90%;
-	background: #f0f0f0;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	font-size: 14px;
-}
-      textarea {
-	border: none;
-	padding: 0 18px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  textarea {
+    border: none;
+    padding: 0 18px;
     width: 90%;
-	background: #f0f0f0;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	font-size: 14px;
-}
-#title {
-  font-size: 20px;
-}
- #btn {
-	width: 150px;
-	border: none;
-  height: 39px;
-	padding: 0 18px;
-	border-radius: 10px;
-}
-  </style>
+    background: #f0f0f0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  #title {
+    font-size: 20px;
+  }
+
+  #btn {
+    width: 150px;
+    border: none;
+    height: 39px;
+    padding: 0 18px;
+    border-radius: 10px;
+  }
+</style>

@@ -72,17 +72,87 @@ router.get('/login', csrfProtection, (req, res, next) => {
 
 
 //.. Updating user info
-router.get('/update', (req, res, next) => {
-  res.render('pages/update', { title: 'Update Profile', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
-  req.session.errors = null;
+router.get('/update', csrfProtection, auth, (req, res, next) => {
+  const id = req.user._id;
+  User.findOne({ _id: id }, (err, user) => {
+    if (err) throw err;
+    const name = user.Username;
+    const username = name.toUpperCase();
+    res.render('pages/update', { title: 'Update Profile', layout: 'userLayout', user: user, csrfToken: req.csrfToken(), username: username, success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
+
+  });
 
 });
 
 
+router.post('/update/:id', async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let surname = req.body.surname;
+    let otherName = req.body.otherName;
+    let phone = req.body.phone;
+    let code = req.body.code;
+    // let email = req.body.email;
+    let username = req.body.username;
+    let lga = req.body.lga;
+    let state = req.body.state;
+    let address = req.body.address;
+    let billAddress = req.body.billAddress;
+    // Validation form inputs
+    req.checkBody('surname', 'Surname is required').isLength({ min: 4, max: 40 }).withMessage('Surname Must be at least 4 chars long');
+    req.checkBody('otherName', 'Other Name name is required').isLength({ min: 4, max: 40 }).withMessage('Other Name name Must be at least 4 chars long');
+    req.checkBody('phone', 'Phone number field is required').isMobilePhone().isLength({ min: 11 }).withMessage('Phone Must be 11 chars long');
+    req.checkBody('lga', 'LGA size is required').isLength({ min: 4, max: 50 }).withMessage('LGA Must be at least 1 chars long');
+    req.checkBody('code', 'Zip Code is required').isNumeric();
+    // req.checkBody('email').isEmail();
+    req.checkBody('username', 'Username is required').isLength({ min: 4, max: 50 }).withMessage('Username Must be at least 4 chars long');
+    req.checkBody('state', 'State is required').isLength({ min: 2, max: 50 }).withMessage('State Must be at least 4 chars long');
+    req.checkBody('address', 'Address description is required').isLength({ min: 4, max: 500 }).withMessage('Address Must be at least 4 chars long');
+    req.checkBody('billAddress', 'Billing address description is required').isLength({ min: 4, max: 500 }).withMessage('Billing address Must be at least 4 chars long');
+    // Checking  for error
+
+    // Checking if errors exist
+    let errors = req.validationErrors();
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      return res.redirect('/users/update');
+    } else {
+      return console.log('seeen');
+      // Checking if Admin already exist
+      await User.update({ _id: id }, {
+        FirstName: first_name,
+        LastName: last_name,
+        Username: username,
+      }, (err) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Profile updated successfully'
+        }
+        res.location('/access/user-profile');
+        res.redirect('/access/user-profile');
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
 //.. Users change password
-router.get('/change', (req, res, next) => {
-  res.render('pages/change-password', { title: 'Change Password', layout: 'userLayout', success: req.session.success, errors: req.session.errors });
-  req.session.errors = null;
+router.get('/change', csrfProtection, auth, (req, res, next) => {
+  const id = req.user._id;
+  User.findOne({ _id: id }, (err, user) => {
+    if (err) throw err;
+    const name = user.Username;
+    const username = name.toUpperCase();
+    res.render('pages/change-password', { title: 'Change Password', layout: 'userLayout', csrfToken: req.csrfToken(), username: username, success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
+
+  });
 
 });
 
@@ -90,9 +160,15 @@ router.get('/change', (req, res, next) => {
 // getting users home
 router.get('/home', csrfProtection, auth, (req, res, next) => {
   try {
-    res.render('pages/home', { title: 'User Dashboard', layout: 'userLayout', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
-    req.session.errors = null;
-    // console.log(';decoded' + decoded);   
+    const id = req.user._id;
+    User.findOne({ _id: id }, (err, user) => {
+      if (err) throw err;
+      const name = user.Username;
+      const username = name.toUpperCase();
+      res.render('pages/home', { title: 'User Dashboard', layout: 'userLayout', username: username, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+      req.session.errors = null;
+      // console.log(name);
+    });
   } catch (err) {
     console.log(err);
 
@@ -109,7 +185,11 @@ router.get('/signup', csrfProtection, (req, res, next) => {
 
 //logging out
 router.post('/logout', (req, res) => {
-  console.log('ss');
+  const token = req.cookies.token;
+  this.delete
+  console.log(token);
+  //res.clearCookie(token);
+  return res.redirect('/users/login');
 });
 
 
@@ -152,14 +232,15 @@ router.post('/login', (req, res, next) => {
             jwt.sign({ _id: user._id, Email: user.Email }, process.env.APP_SECRET_KEY, (err, token) => {
               if (err) throw err;
               console.log(token);
-              // res.send(token);
-              res.header('x-auth-token', token);
+              res.cookie('token', token);
+              //  res.header('x-auth-token', token);
               return res.redirect('/users/home');
             });
           }
         });
       }
     });
+
   }
 });
 

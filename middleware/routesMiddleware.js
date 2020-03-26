@@ -1,18 +1,30 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+// Route Middleware
+
 
 module.exports = function (req, res, next) {
-    try {
-        const token = req.headers('x-auth-token');
-        const decoded = jwt.verify(token, process.env.APP_SECRET_KEY);
-        req.user = decoded;
-        next();
-
-    } catch (err) {
+    const token = req.cookies.token;
+    if (!token) {
         return res.redirect('/users/login');
+
     }
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.APP_SECRET_KEY);
+        req.user = decoded;
+    } catch (e) {
+        if (e instanceof jwt.JsonWebTokenError) {
+            return res.redirect('/users/login');
+        }
+        return res.redirect('/users/login');
+
+    }
+    next();
+    //res.send(`welcome${payload._id}`);
 
 }
+
 
 
 // module.exports = function(req, res, next) {
