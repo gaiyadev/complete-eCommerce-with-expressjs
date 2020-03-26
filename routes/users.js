@@ -13,24 +13,6 @@ var express = require('express');
 const csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
-// const auth = function (req, res, next) {
-
-//   try {
-//     const header = req.header('x-auth-token');
-//     const token = header && header.split(' ')[1];
-//     if (token == null) {
-//       return res.redirect('/users/login');
-//     } else {
-//       jwt.verify(req.body.token, process.env.APP_SECRET_KEY, (err, user) => {
-//         if (err) throw err;
-//         req.user = user;
-//         next();
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
 
 //.. Get forgot password form
 router.get('/forgot-password', csrfProtection, (req, res, next) => {
@@ -149,18 +131,88 @@ router.post('/update/:id', async (req, res, next) => {
 
 //.. Users change password
 router.get('/change', csrfProtection, auth, (req, res, next) => {
-  const id = req.user._id;
+  let id = req.user._id;
   User.findOne({ _id: id }, (err, user) => {
     if (err) throw err;
     const name = user.Username;
     const username = name.toUpperCase();
-    res.render('pages/change-password', { title: 'Change Password', layout: 'userLayout', csrfToken: req.csrfToken(), username: username, success: req.session.success, errors: req.session.errors });
+    res.render('pages/change-password', { title: 'User Change Password', layout: 'userLayout', id: id, csrfToken: req.csrfToken(), username: username, success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
-
   });
 
 });
 
+
+// User change password part
+router.post('/user/changePassword/:id', (req, res, next) => {
+  let current_password = req.body.current_password;
+  let new_password = req.body.new_password;
+  let confirmed_newPassword = req.body.confirmed_newPassword;
+  let id = req.params.id;
+  // let id = req.params._id;
+  console.log('see it' + id);
+  req.checkBody('current_password', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('password Must be at least 8 chars long');
+  req.checkBody('new_password', 'Current password is required').notEmpty().isLength({ min: 8, max: 50 }).withMessage('Confirm password Must be at least 8 chars long');
+  req.checkBody('new_password', 'password is required').notEmpty().equals(confirmed_newPassword).withMessage('Password confirmation fails');
+
+  //Checking for Errors
+  let errors = req.validationErrors();
+  if (errors) {
+    req.session.errors = errors;
+    req.session.success = false;
+    return res.redirect('/users/change');
+  } else {
+    //return console.log('see it' + id);
+
+    User.findOne({ _id: id }, (err, user) => {
+      if (err) throw err;
+      if (!user) {
+        return console.log('unknown Admin');
+      }
+      User.comparePassword(current_password, user.Password, (err, isMatch) => {
+        if (err) throw err;
+        if (isMatch) {
+          User.comparePassword(new_password, user.Password, (err, isMatch) => {
+            if (err) throw err;
+            if (isMatch) {
+              req.session.message = {
+                type: 'error',
+                intro: '',
+                message: 'New password can not be the same with current password'
+              }
+              return res.redirect('/users/change');
+            }
+            if (!isMatch) {
+              bcrypt.hash(new_password, 10, async (err, hash) => {
+                if (err) throw err;
+                User.update({ _id: id }, {
+                  Password: hash
+                }, (err) => {
+                  if (err) throw err;
+                  req.session.message = {
+                    type: 'success',
+                    intro: '',
+                    message: 'Password changed successfully'
+                  }
+                  return res.redirect('/users/login');
+                });
+              });
+
+            }
+          });
+        }
+        if (!isMatch) {
+          req.session.message = {
+            type: 'error',
+            intro: '',
+            message: 'Current password is not correct'
+          }
+          return res.redirect('/users/change');
+        }
+      });
+    });
+  }
+});
 
 // getting users home
 router.get('/home', csrfProtection, auth, (req, res, next) => {
@@ -187,6 +239,8 @@ router.get('/signup', csrfProtection, (req, res, next) => {
   req.session.errors = null;
 
 });
+
+
 
 //logging out
 router.post('/logout', (req, res) => {
@@ -234,10 +288,12 @@ router.post('/login', (req, res, next) => {
             res.redirect('back');
           } else {
             // success login ... Generating jwt for auth
-            jwt.sign({ _id: user._id, Email: user.Email }, process.env.APP_SECRET_KEY, (err, token) => {
+            jwt.sign({ _id: user._id, Email: user.Email }, process.env.APP_SECRET_KEY, {
+              expiresIn: '1h'
+            }, (err, token) => {
               if (err) throw err;
-              console.log(token);
-              res.cookie('token', token);
+              //console.log(token);
+              res.cookie('token', token, { maxAge: 60 * 60 * 60 });
               //  res.header('x-auth-token', token);
               return res.redirect('/users/home');
             });
