@@ -6,7 +6,6 @@ const crypto = require('crypto');
 const config = require('config');
 const auth = require('../middleware/routesMiddleware');
 const jwt = require('jsonwebtoken');
-
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
 var express = require('express');
@@ -516,6 +515,10 @@ router.post('/signup', (req, res, next) => {
   }
 });
 
+
+/**
+ * CHECKOUT, CARD SECTION
+ */
 
 module.exports = router;
 
