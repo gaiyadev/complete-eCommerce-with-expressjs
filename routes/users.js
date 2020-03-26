@@ -109,12 +109,11 @@ router.get('/reset-password/:token', csrfProtection, async (req, res, next) => {
 });
 
 
-//logging out
+//logging out but jwt token is still active
 router.post('/logout', (req, res) => {
-  const token = req.cookies.token;
-  this.delete
-  console.log(token);
-  //res.clearCookie(token);
+  let token = req.cookies.token;
+  delete token;
+  res.clearCookie(token);
   return res.redirect('/users/login');
 });
 
@@ -417,7 +416,7 @@ router.post('/login', (req, res, next) => {
           } else {
             // success login ... Generating jwt for auth
             jwt.sign({ _id: user._id, Email: user.Email }, process.env.APP_SECRET_KEY, {
-              expiresIn: '1h'
+              expiresIn: '1d'
             }, (err, token) => {
               if (err) throw err;
               //console.log(token);
