@@ -30,7 +30,10 @@
 									<td class="quy-col">
 										<div class="quantity">
 											<div class="pro-qty">
-												<input type="text" value="1">
+												<form action="/cart/add/:id" method="post">
+													<input type="text" name="inc" value="{{quantity}}">
+
+												</form>
 											</div>
 										</div>
 									</td>

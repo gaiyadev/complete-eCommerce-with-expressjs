@@ -158,7 +158,7 @@ router.get('/cart', (req, res, next) => {
   let total = 0;
   for (let item in cart) {
     displayCart.item.push(cart[item]);
-    total = (cart[item].qty * cart[item].price);
+    total += (cart[item].quantity * cart[item].price);
   }
   displayCart.total = total;
   global.items = displayCart.item;
@@ -169,18 +169,19 @@ router.get('/cart', (req, res, next) => {
 //  Adding product to cart
 router.post('/cart/add/:id', (req, res, next) => {
   let id = req.params.id;
+  increment = req.body.inc;
   req.session.cart = req.session.cart || {};
   let cart = req.session.cart;
   Product.findOne({ _id: id }, (err, product) => {
     if (err) throw err;
     if (cart[id]) {
-      cart[id].qty++;
+      cart[id].quantity++ || increment++;
     } else {
       cart[id] = {
         id: product._id,
         product: product.ProductName,
         brand: product.ProductBrand,
-        price: product.ProductPrice.Number(),
+        price: parseInt(product.ProductPrice),
         image: product.ProductImage,
         size: product.ProductSize,
         quantity: 1,
