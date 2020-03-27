@@ -1,4 +1,7 @@
-const db = require('../database');
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+const mongoose = require('mongoose');
+const db = require('../database/db');
 
 const OrderSchema = new mongoose.Schema({
     FirstName: {
@@ -70,3 +73,36 @@ const OrderSchema = new mongoose.Schema({
 
 const Order = mongoose.model('Order', OrderSchema);
 module.exports = Order;
+
+// Function to create new Admin    
+module.exports.createOrder = (newOrder, callback) => {
+    newOrder.save(callback); //create New Admin
+    // Send a mail Register
+    let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.APP_EMAIL,
+            pass: process.env.APP_PASSWORD,
+        }
+    });
+
+    let mailOptions = {
+        from: process.env.APP_EMAIL,
+        to: newOrder.Email, //admin mail
+        subject: 'Your Order',
+        text: "Dear Esteem Customerr.",
+        html: `<p>You got a new order submission with the following details...</p>
+            <ul>
+              <li>Name: ${newOrder.FirstName}</li>
+              <li>Subject: ${newOrder.LastName}</li>
+              <li>Email: ${newOrder.Email}</li>
+              <li>Message: ${newOrder.ProductPrice}</li>
+            </ul>`
+    };
+
+    transporter.sendMail(mailOptions, function (err, info) {
+        if (err) throw err;
+        console.log("message Sent Successfully!!" + newMessage.Email);
+    });
+
+}

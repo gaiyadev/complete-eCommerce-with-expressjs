@@ -2,6 +2,7 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
 const db = require('../database/db');
+
 const ContactSchema = new mongoose.Schema({
     Name: {
         type: String,

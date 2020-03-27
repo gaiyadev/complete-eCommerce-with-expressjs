@@ -6,7 +6,6 @@ var csrf = require('csurf')
 const csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
-
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   try {
@@ -204,7 +203,6 @@ router.get('/checkout', csrfProtection, (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-
 });
 
 //  Viewing product already added to cart  cart Page
