@@ -1,6 +1,7 @@
 <!-- cart section end -->
 <section class="cart-section spad">
 	<div class="container">
+		{{>messages }}
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="cart-table">
@@ -82,67 +83,29 @@
 			<h2>Continue Shopping</h2>
 		</div>
 		<div class="row">
+			{{#each product }}
 			<div class="col-lg-3 col-sm-6">
 				<div class="product-item">
 					<div class="pi-pic">
-						<div class="tag-new">New</div>
-						<img src="./img/product/2.jpg" alt="">
+						<img src="/../uploads/{{ _doc.ProductImage }}" alt="">
 						<div class="pi-links">
-							<a href="#" class="add-card"><i class="flaticon-bag"></i><span>ADD TO CART</span></a>
-							<a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
+							<form action="/cart/add/{{ _doc._id }}" method="post">
+								<button style="float: left;" type="submit" id="btn" class="add-card btn-primary"><i
+										class="flaticon-bag"></i><span>Add TO
+										Cart</span></button>
+							</form>
+							<a href=" {{_doc._id }} " class="wishlist-btn"><i class="flaticon-heart"></i></a>
+							<a href="/product/{{ _doc._id}} " class="wishlist-btn"><i class="flaticon-visible"></i></a>
 						</div>
 					</div>
 					<div class="pi-text">
-						<h6>$35,00</h6>
-						<p>Black and White Stripes Dress</p>
+						<h6>&#8358 {{_doc.ProductPrice }} </h6>
+						<p>{{_doc.ProductName }} </p>
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3 col-sm-6">
-				<div class="product-item">
-					<div class="pi-pic">
-						<img src="./img/product/5.jpg" alt="">
-						<div class="pi-links">
-							<a href="#" class="add-card"><i class="flaticon-bag"></i><span>ADD TO CART</span></a>
-							<a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
-						</div>
-					</div>
-					<div class="pi-text">
-						<h6>$35,00</h6>
-						<p>Flamboyant Pink Top </p>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6">
-				<div class="product-item">
-					<div class="pi-pic">
-						<img src="./img/product/9.jpg" alt="">
-						<div class="pi-links">
-							<a href="#" class="add-card"><i class="flaticon-bag"></i><span>ADD TO CART</span></a>
-							<a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
-						</div>
-					</div>
-					<div class="pi-text">
-						<h6>$35,00</h6>
-						<p>Flamboyant Pink Top </p>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6">
-				<div class="product-item">
-					<div class="pi-pic">
-						<img src="./img/product/1.jpg" alt="">
-						<div class="pi-links">
-							<a href="#" class="add-card"><i class="flaticon-bag"></i><span>ADD TO CART</span></a>
-							<a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
-						</div>
-					</div>
-					<div class="pi-text">
-						<h6>&#8358 35,00</h6>
-						<p>Flamboyant Pink Top </p>
-					</div>
-				</div>
-			</div>
+			{{/each }}
+
 		</div>
 	</div>
 </section>

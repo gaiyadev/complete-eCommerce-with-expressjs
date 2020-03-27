@@ -1,10 +1,9 @@
 const Product = require('../models/product');
 const Review = require('../models/review');
+const Message = require('../models/contact');
 var express = require('express');
 var csrf = require('csurf')
-
 const csrfProtection = csrf({ cookie: true });
-
 var router = express.Router();
 
 
@@ -84,10 +83,54 @@ router.get('/shoes', (req, res, next) => {
   }
 });
 
-// Men Contact Page
-router.get('/contact', (req, res, next) => {
+// Contact Us page
+router.get('/contact', csrfProtection, (req, res, next) => {
   try {
-    res.render('pages/contact', { title: 'Contac Us' });
+    Product.find({ ProductCategory: 'Women Fashion' }, (err, product) => {
+      if (err) throw err;
+      res.render('pages/contact', { title: 'Contact Us', product: product, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+      req.session.errors = null;
+    }).limit(4);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Post Contact Page
+router.post('/contact', (req, res, next) => {
+  try {
+    let name = req.body.name;
+    let email = req.body.email;
+    let subject = req.body.subject;
+    let message = req.body.message;
+    req.checkBody('name', 'Name field is required').notEmpty().isLength({ min: 4, max: 50 }).withMessage('Name field Must be at least 4 chars long');
+    req.checkBody('email', 'Email field is required').isEmail().isLength({ min: 4, max: 50 }).withMessage('Email field Must be at least 4 chars long');
+    req.checkBody('subject', 'subject field is required').notEmpty().isLength({ min: 4, max: 50 }).withMessage('Subject field Must be at least 4 chars long');;
+    req.checkBody('message', 'Email field is required').notEmpty().isLength({ min: 4, max: 500 }).withMessage('Message field Must be at least 4 chars long');
+
+    // Checking if errors exist
+    let errors = req.validationErrors();
+    if (errors) {
+      req.session.errors = errors;
+      req.session.success = false;
+      return res.redirect('/contact');
+    } else {
+      let newMessage = new Message({
+        Name: name,
+        Email: email,
+        Subject: subject,
+        Message: message,
+      });
+      Message.createMessage(newMessage, (err, mess) => {
+        if (err) throw err;
+        req.session.message = {
+          type: 'success',
+          intro: '',
+          message: 'Message sent successfully'
+        }
+        return res.redirect('/contact');
+      });
+    }
   } catch (err) {
     console.log(err);
   }
@@ -113,11 +156,8 @@ router.get('/product/:id', async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-
   }
 });
-
-
 
 
 router.post('/reviews/:id', (req, res, next) => {
@@ -136,7 +176,7 @@ router.post('/reviews/:id', (req, res, next) => {
       req.session.message = {
         type: 'success',
         intro: '',
-        message: 'Review added successfully'
+        message: 'Review submitted successfully'
       }
       return res.redirect('back');
     });
@@ -144,8 +184,6 @@ router.post('/reviews/:id', (req, res, next) => {
     console.log(err);
   }
 });
-
-
 
 //  Checkout Page
 router.get('/checkout', csrfProtection, (req, res, next) => {
@@ -161,7 +199,7 @@ router.get('/checkout', csrfProtection, (req, res, next) => {
     }
     displayCart.total = total;
     global.items = displayCart.item;
-    res.render('pages/checkout', { title: 'Checkout page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+    res.render('pages/checkout', { title: 'Product Checkout Page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
     req.session.errors = null;
   } catch (err) {
     console.log(err);
@@ -183,7 +221,10 @@ router.get('/cart', (req, res, next) => {
     }
     displayCart.total = total;
     global.items = displayCart.item;
-    res.render('pages/cart', { title: 'Cart page', cart: displayCart });
+    Product.find({ ProductCategory: 'Men Fashion' }, (err, product) => {
+      if (err) throw err;
+      res.render('pages/cart', { title: 'View Cart page', cart: displayCart, product: product });
+    }).limit(4);
   } catch (err) {
     console.log(err);
   }
@@ -225,11 +266,12 @@ router.post('/cart/add/:id', (req, res, next) => {
 
 //logic to remove from cart
 router.get('/cart/remove/:id', (req, res, next) => {
-  req.session.cart = req.session.cart || {};
-
-  res.redirect('back');
-
-
+  try {
+    req.session.cart = req.session.cart || {};
+    res.redirect('back');
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

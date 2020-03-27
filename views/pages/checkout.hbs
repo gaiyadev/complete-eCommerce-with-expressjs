@@ -1,6 +1,7 @@
 <!-- checkout section  -->
 <section class="checkout-section spad">
 	<div class="container">
+		{{>messages }}
 		<div class="row">
 			<div class="col-lg-8 order-2 order-lg-1">
 				<form class="checkout-form" action="" method="POST">
@@ -88,9 +89,9 @@
 					<p class="text-danger">There are no product in your shopping cart</p>
 					{{/if}}
 					<ul class="price-list">
-						<li>Total<span> &#8358 {{cart.total}}</span></li>
+						<li>Total<span> &#8358 {{ cart.total }}</span></li>
 						<li>Shipping<span>free</span></li>
-						<li class="total">Total<span>&#8358 {{cart.total}} </span></li>
+						<li class="total">Total<span>&#8358 {{ cart.total }} </span></li>
 					</ul>
 				</div>
 			</div>
