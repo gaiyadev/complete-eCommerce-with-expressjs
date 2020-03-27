@@ -153,7 +153,7 @@ router.get('/cart', (req, res, next) => {
   let cart = req.session.cart;
   let displayCart = {
     item: [], total: 0
-  };
+  }
 
   let total = 0;
   for (let item in cart) {
@@ -161,6 +161,7 @@ router.get('/cart', (req, res, next) => {
     total = (cart[item].qty * cart[item].price);
   }
   displayCart.total = total;
+  global.items = displayCart.item;
   res.render('pages/cart', { title: 'Cart page', cart: displayCart });
 });
 
@@ -172,13 +173,14 @@ router.post('/cart/add/:id', (req, res, next) => {
   let cart = req.session.cart;
   Product.findOne({ _id: id }, (err, product) => {
     if (err) throw err;
-    if (cart[req.params.id]) {
-      cart[req.params.id].qty++;
+    if (cart[id]) {
+      cart[id].qty++;
     } else {
-      cart[req.params.id] = {
-        item: product._id,
+      cart[id] = {
+        id: product._id,
         product: product.ProductName,
-        price: product.ProductPrice,
+        brand: product.ProductBrand,
+        price: product.ProductPrice.Number(),
         image: product.ProductImage,
         size: product.ProductSize,
         quantity: 1,
@@ -194,7 +196,34 @@ router.post('/cart/add/:id', (req, res, next) => {
   });
 });
 
+//logic to remove from cart
+router.get('/cart/remove/:id', (req, res, next) => {
+  req.session.cart = req.session.cart || {};
+  let cart = req.session.cart;
+  let id = req.params.id;
+  let array = items;
+  let index = array.indexOf(items.id);
+  if (index > id) {
+    array.splice(index, 1);
+  } else {
+    console.log(array);
+  }
+
+  res.redirect('back');
 
 
+  //console.log(id);
+});
 
 module.exports = router;
+ //let index = req.params.id.split("-")[1];
+  //let index = removeItem.indexOf(id);
+  // removeItem.splice(index, 1);
+  // console.log(index);
+
+
+  // req.session.cart = req.session.cart || {};
+  // let cart = req.session.cart;
+  // let item = [id];
+  // let index = req.params.id.split("-")[1];
+  // delete item.splice(index, 1);

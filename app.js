@@ -40,6 +40,10 @@ app.engine('hbs', hbs({
     count: function (index) {
       index++;
       return index;
+    },
+    math: function (total) {
+      return Number(total);
+
     }
   }
 }));
