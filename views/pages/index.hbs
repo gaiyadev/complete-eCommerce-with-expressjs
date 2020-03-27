@@ -141,8 +141,9 @@
 						<img src="/../uploads/{{ _doc.ProductImage }}" alt="">
 						<div class="pi-links">
 							<form action="/cart/add/{{ _doc._id }}" method="post">
-								<button style="float: left;" type="submit" class="add-card btn-primary"><i
-										class="flaticon-bag"></i><span>Add TO Cart</span></button>
+								<button style="float: left;" type="submit" id="btn" class="add-card btn-primary"><i
+										class="flaticon-bag"></i><span>Add TO
+										Cart</span></button>
 							</form>
 							<a href=" {{_doc._id }} " class="wishlist-btn"><i class="flaticon-heart"></i></a>
 							<a href="/product/{{ _doc._id}} " class="wishlist-btn"><i class="flaticon-visible"></i></a>
@@ -178,3 +179,9 @@
 	</div>
 </section>
 <!-- Banner section end  -->
+
+<script>
+	$(document).on('click', '#btn', function () {
+		alert('ssssssss');
+	});
+</script>

@@ -30,8 +30,8 @@
 									<td class="quy-col">
 										<div class="quantity">
 											<div class="pro-qty">
-												<form action="/cart/add/:id" method="post">
-													<input type="text" name="inc" value="{{quantity}}">
+												<form action="/cart/add/{{id}}" method="post">
+													<input type="text" name="inc" value="{{ quantity }}">
 
 												</form>
 											</div>
@@ -58,7 +58,7 @@
 						{{/if}}
 					</div>
 					<div class="total-cost">
-						<h6>Total <span>&#8358 {{math cart.total }}</span></h6>
+						<h6>Total <span>&#8358 {{math cart.total }}.00</span></h6>
 					</div>
 				</div>
 			</div>
@@ -67,7 +67,7 @@
 					<input type="text" placeholder="Enter promo code">
 					<button>Submit</button>
 				</form>
-				<a href="" class="site-btn">Proceed to checkout</a>
+				<a href="/checkout" class="site-btn">Proceed to checkout</a>
 				<a href="/" class="site-btn sb-dark">Continue shopping</a>
 			</div>
 		</div>

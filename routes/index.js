@@ -1,6 +1,10 @@
 const Product = require('../models/product');
 const Review = require('../models/review');
 var express = require('express');
+var csrf = require('csurf')
+
+const csrfProtection = csrf({ cookie: true });
+
 var router = express.Router();
 
 
@@ -144,87 +148,88 @@ router.post('/reviews/:id', (req, res, next) => {
 
 
 //  Checkout Page
-router.get('/checkout', (req, res, next) => {
-  res.render('pages/checkout', { title: 'Checkout page' });
+router.get('/checkout', csrfProtection, (req, res, next) => {
+  try {
+    let cart = req.session.cart;
+    let displayCart = {
+      item: [], total: 0
+    }
+    let total = 0;
+    for (let item in cart) {
+      displayCart.item.push(cart[item]);
+      total += (cart[item].quantity * cart[item].price);
+    }
+    displayCart.total = total;
+    global.items = displayCart.item;
+    res.render('pages/checkout', { title: 'Checkout page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+    req.session.errors = null;
+  } catch (err) {
+    console.log(err);
+  }
+
 });
 
 //  Viewing product already added to cart  cart Page
 router.get('/cart', (req, res, next) => {
-  let cart = req.session.cart;
-  let displayCart = {
-    item: [], total: 0
+  try {
+    let cart = req.session.cart;
+    let displayCart = {
+      item: [], total: 0
+    }
+    let total = 0;
+    for (let item in cart) {
+      displayCart.item.push(cart[item]);
+      total += (cart[item].quantity * cart[item].price);
+    }
+    displayCart.total = total;
+    global.items = displayCart.item;
+    res.render('pages/cart', { title: 'Cart page', cart: displayCart });
+  } catch (err) {
+    console.log(err);
   }
-
-  let total = 0;
-  for (let item in cart) {
-    displayCart.item.push(cart[item]);
-    total += (cart[item].quantity * cart[item].price);
-  }
-  displayCart.total = total;
-  global.items = displayCart.item;
-  res.render('pages/cart', { title: 'Cart page', cart: displayCart });
 });
 
 
 //  Adding product to cart
 router.post('/cart/add/:id', (req, res, next) => {
-  let id = req.params.id;
-  increment = req.body.inc;
-  req.session.cart = req.session.cart || {};
-  let cart = req.session.cart;
-  Product.findOne({ _id: id }, (err, product) => {
-    if (err) throw err;
-    if (cart[id]) {
-      cart[id].quantity++ || increment++;
-    } else {
-      cart[id] = {
-        id: product._id,
-        product: product.ProductName,
-        brand: product.ProductBrand,
-        price: parseInt(product.ProductPrice),
-        image: product.ProductImage,
-        size: product.ProductSize,
-        quantity: 1,
+  try {
+    let id = req.params.id;
+    req.session.cart = req.session.cart || {};
+    let cart = req.session.cart;
+    Product.findOne({ _id: id }, (err, product) => {
+      if (err) throw err;
+      if (cart[id]) {
+        cart[id].quantity++;
+      } else {
+        cart[id] = {
+          id: product._id,
+          product: product.ProductName,
+          brand: product.ProductBrand,
+          price: parseInt(product.ProductPrice),
+          image: product.ProductImage,
+          size: product.ProductSize,
+          quantity: 1,
+        }
       }
-    }
-    req.session.message = {
-      type: 'success',
-      intro: '',
-      message: 'Product added successfully'
-    }
-    return res.redirect('back');
-
-  });
+      req.session.message = {
+        type: 'success',
+        intro: '',
+        message: 'Product added successfully'
+      }
+      return res.redirect('back');
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 //logic to remove from cart
 router.get('/cart/remove/:id', (req, res, next) => {
   req.session.cart = req.session.cart || {};
-  let cart = req.session.cart;
-  let id = req.params.id;
-  let array = items;
-  let index = array.indexOf(items.id);
-  if (index > id) {
-    array.splice(index, 1);
-  } else {
-    console.log(array);
-  }
 
   res.redirect('back');
 
 
-  //console.log(id);
 });
 
 module.exports = router;
- //let index = req.params.id.split("-")[1];
-  //let index = removeItem.indexOf(id);
-  // removeItem.splice(index, 1);
-  // console.log(index);
-
-
-  // req.session.cart = req.session.cart || {};
-  // let cart = req.session.cart;
-  // let item = [id];
-  // let index = req.params.id.split("-")[1];
-  // delete item.splice(index, 1);
