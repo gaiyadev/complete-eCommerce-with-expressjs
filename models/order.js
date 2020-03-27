@@ -60,9 +60,11 @@ const OrderSchema = new mongoose.Schema({
         maxlength: 50,
     },
     UserOrder: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+        type: String,
+    },
+    OrderID: {
+        type: String,
+        required: true
     },
     CreatedAt: {
         type: Date,
