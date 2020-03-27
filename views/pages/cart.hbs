@@ -6,6 +6,7 @@
 				<div class="cart-table">
 					<h3>Your Cart</h3>
 					<div class="cart-table-warp">
+						{{#if cart.item }}
 						<table>
 							<thead>
 								<tr>
@@ -16,13 +17,14 @@
 									<th class="total-th">Action</th>
 								</tr>
 							</thead>
+							{{#each cart.item }}
 							<tbody>
 								<tr>
 									<td class="product-col">
-										<img src="img/cart/1.jpg" alt="">
+										<img src="/../uploads/{{ image }}" alt="product image">
 										<div class="pc-title">
-											<h4>Animal Print Dress</h4>
-											<p>$45.90</p>
+											<h4>{{ ProductName }}</h4>
+											<p>{{ product }}</p>
 										</div>
 									</td>
 									<td class="quy-col">
@@ -33,65 +35,27 @@
 										</div>
 									</td>
 									<td class="size-col">
-										<h4>Size M</h4>
+										<h4>Size {{size}}</h4>
 									</td>
 									<td class="total-col">
-										<h4>&#8358 45.90</h4>
+										<h4>&#8358 {{ price }}</h4>
 									</td>
-									<td class="total-col  flaticon-remove">
-										<h4></h4>
-									</td>
-
-								</tr>
-								<tr>
-									<td class="product-col">
-										<img src="img/cart/2.jpg" alt="">
-										<div class="pc-title">
-											<h4>Ruffle Pink Top</h4>
-											<p>$45.90</p>
-										</div>
-									</td>
-									<td class="quy-col">
-										<div class="quantity">
-											<div class="pro-qty">
-												<input type="text" value="1">
-											</div>
-										</div>
-									</td>
-									<td class="size-col">
-										<h4>Size M</h4>
-									</td>
-									<td class="total-col">
-										<h4>$45.90</h4>
-									</td>
-								</tr>
-								<tr>
-									<td class="product-col">
-										<img src="img/cart/3.jpg" alt="">
-										<div class="pc-title">
-											<h4>Skinny Jeans</h4>
-											<p>$45.90</p>
-										</div>
-									</td>
-									<td class="quy-col">
-										<div class="quantity">
-											<div class="pro-qty">
-												<input type="text" value="1">
-											</div>
-										</div>
-									</td>
-									<td class="size-col">
-										<h4>Size M</h4>
-									</td>
-									<td class="total-col">
-										<h4>$45.90</h4>
+									<td class="total-col ">
+										<form>
+											<button type="submit" class="btn btn-danger"><i
+													class="flaticon-remove"></i></button>
+										</form>
 									</td>
 								</tr>
 							</tbody>
+							{{/each}}
 						</table>
+						{{else}}
+						<p class="text-danger">There are no product in your shopping cart</p>
+						{{/if}}
 					</div>
 					<div class="total-cost">
-						<h6>Total <span>$99.90</span></h6>
+						<h6>Total <span>{{  price}}</span></h6>
 					</div>
 				</div>
 			</div>

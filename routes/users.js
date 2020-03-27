@@ -113,7 +113,7 @@ router.get('/reset-password/:token', csrfProtection, async (req, res, next) => {
 router.post('/logout', (req, res) => {
   let token = req.cookies.token;
   delete token;
-  res.clearCookie(token);
+  res.clearCookie(token, { path: '/users/home' });
   return res.redirect('/users/login');
 });
 
@@ -366,7 +366,6 @@ router.get('/home', csrfProtection, auth, (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-
   }
 
 });
@@ -375,7 +374,6 @@ router.get('/home', csrfProtection, auth, (req, res, next) => {
 router.get('/signup', csrfProtection, (req, res, next) => {
   res.render('pages/signup', { title: 'Create an Account', csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
   req.session.errors = null;
-
 });
 
 
@@ -518,6 +516,9 @@ router.post('/signup', (req, res, next) => {
 /**
  * CHECKOUT, CARD SECTION
  */
+
+
+
 
 module.exports = router;
 

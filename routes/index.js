@@ -114,22 +114,7 @@ router.get('/product/:id', async (req, res, next) => {
 });
 
 
-//  Checkout Page
-router.get('/checkout', (req, res, next) => {
-  res.render('pages/checkout', { title: 'Checkout page' });
-});
 
-//  cart Page
-router.get('/cart', (req, res, next) => {
-  res.render('pages/cart', { title: 'Cart page' });
-});
-
-
-//  Viewing product Page
-router.post('/cart/add/:id', (req, res, next) => {
-  let id = req.params.id;
-  console.log('cart is sen' + id);
-});
 
 router.post('/reviews/:id', (req, res, next) => {
   try {
@@ -157,6 +142,57 @@ router.post('/reviews/:id', (req, res, next) => {
 });
 
 
+
+//  Checkout Page
+router.get('/checkout', (req, res, next) => {
+  res.render('pages/checkout', { title: 'Checkout page' });
+});
+
+//  Viewing product already added to cart  cart Page
+router.get('/cart', (req, res, next) => {
+  let cart = req.session.cart;
+  let displayCart = {
+    item: [], total: 0
+  };
+
+  let total = 0;
+  for (let item in cart) {
+    displayCart.item.push(cart[item]);
+    total = (cart[item].qty * cart[item].price);
+  }
+  displayCart.total = total;
+  res.render('pages/cart', { title: 'Cart page', cart: displayCart });
+});
+
+
+//  Adding product to cart
+router.post('/cart/add/:id', (req, res, next) => {
+  let id = req.params.id;
+  req.session.cart = req.session.cart || {};
+  let cart = req.session.cart;
+  Product.findOne({ _id: id }, (err, product) => {
+    if (err) throw err;
+    if (cart[req.params.id]) {
+      cart[req.params.id].qty++;
+    } else {
+      cart[req.params.id] = {
+        item: product._id,
+        product: product.ProductName,
+        price: product.ProductPrice,
+        image: product.ProductImage,
+        size: product.ProductSize,
+        quantity: 1,
+      }
+    }
+    req.session.message = {
+      type: 'success',
+      intro: '',
+      message: 'Product added successfully'
+    }
+    return res.redirect('back');
+
+  });
+});
 
 
 
