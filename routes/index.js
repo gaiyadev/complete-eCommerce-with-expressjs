@@ -272,16 +272,30 @@ router.post('/cart/add/:id', (req, res, next) => {
 //logic to remove from cart
 router.post('/cart/remove/:id', (req, res, next) => {
   try {
-    let cart = req.session.cart;
     req.session.cart = req.session.cart || {};
+    let cart = req.session.cart;
     let productID = req.params.id;
     let index = req.body.index;
     let product = items;
-    if (index = 1) {
-      //delete productID;
-      product.splice(index, 1);
+    if (cart[productID].id == productID) {
+      product.splice(cart[productID].id, 1);
     }
-    console.log(cart);
+    //console.log(cart[productID].id);
+    //req.session.destroy();
+    //let cart = req.session.destroy();
+    //displayCart = req.session.destroy();
+    return res.redirect('back');
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//logic to empty from cart
+router.post('/cart/clear', (req, res, next) => {
+  try {
+    req.session.cart = req.session.cart || {};
+    let cart = req.session.cart;
+    req.session.destroy();
     return res.redirect('back');
   } catch (err) {
     console.log(err);
