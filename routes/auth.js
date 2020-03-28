@@ -37,7 +37,6 @@ router.get('/dashboard', ensureAuthenicated, csrfProtection, (req, res, next) =>
   } catch (error) {
     console.log(error);
   }
-
 });
 
 /* GET Categories page. */
@@ -623,8 +622,8 @@ router.get('/show_product/:id', ensureAuthenicated, async (req, res, next) => {
         res.render('admin/viewProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs' });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -643,8 +642,8 @@ router.get('/edit_product/:id', ensureAuthenicated, async (req, res, next) => {
         res.render('admin/editProduct', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -662,8 +661,8 @@ router.get('/edit_women_product/:id', ensureAuthenicated, async (req, res, next)
         res.render('admin/womenEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -681,8 +680,8 @@ router.get('/edit_shoes_product/:id', ensureAuthenicated, async (req, res, next)
         res.render('admin/shoesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -701,8 +700,8 @@ router.get('/edit_jewlyry_product/:id', ensureAuthenicated, async (req, res, nex
         res.render('admin/JewlyryEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -720,8 +719,8 @@ router.get('/edit_phones_product/:id', ensureAuthenicated, async (req, res, next
         res.render('admin/phonesEditPage', { title: 'NodeStore Dashboard Categories', product: product, layout: 'adminlayouts.hbs', success: req.session.success, errors: req.session.errors });
       }
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 /**
@@ -786,8 +785,8 @@ router.post('/product/update/:id', upload.single('product_image'), async (req, r
         });
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -847,8 +846,8 @@ router.post('/product/women/:id', upload.single('product_image'), async (req, re
         });
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 

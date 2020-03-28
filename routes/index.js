@@ -6,6 +6,7 @@ var csrf = require('csurf')
 const csrfProtection = csrf({ cookie: true });
 var router = express.Router();
 
+
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   try {
@@ -125,7 +126,7 @@ router.post('/contact', (req, res, next) => {
         req.session.message = {
           type: 'success',
           intro: '',
-          message: 'Message sent successfully'
+          message: 'thank You, Message sent successfully.'
         }
         return res.redirect('/contact');
       });
@@ -187,19 +188,24 @@ router.post('/reviews/:id', (req, res, next) => {
 //  Checkout Page
 router.get('/checkout', csrfProtection, (req, res, next) => {
   try {
+    // Starting a session with the name  cart
     let cart = req.session.cart;
     let displayCart = {
       item: [], total: 0
     }
-    let total = 0;
+    let total = 0; //When the cart is empty
     for (let item in cart) {
       displayCart.item.push(cart[item]);
       total += (cart[item].quantity * cart[item].price);
     }
     displayCart.total = total;
-    global.items = displayCart.item;
-    res.render('pages/checkout', { title: 'Product Checkout Page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
-    req.session.errors = null;
+    //..... Checking for session
+    if (!cart) {
+      return res.redirect('/cart');
+    } else {
+      res.render('pages/checkout', { title: 'Product Checkout Page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
+      req.session.errors = null;
+    }
   } catch (err) {
     console.log(err);
   }
@@ -218,6 +224,7 @@ router.get('/cart', (req, res, next) => {
       total += (cart[item].quantity * cart[item].price);
     }
     displayCart.total = total;
+    //..Setting a global variable
     global.items = displayCart.item;
     Product.find({ ProductCategory: 'Men Fashion' }, (err, product) => {
       if (err) throw err;
@@ -263,13 +270,23 @@ router.post('/cart/add/:id', (req, res, next) => {
 });
 
 //logic to remove from cart
-router.get('/cart/remove/:id', (req, res, next) => {
+router.post('/cart/remove/:id', (req, res, next) => {
   try {
+    let cart = req.session.cart;
     req.session.cart = req.session.cart || {};
-    res.redirect('back');
+    let productID = req.params.id;
+    let index = req.body.index;
+    let product = items;
+    if (index = 1) {
+      //delete productID;
+      product.splice(index, 1);
+    }
+    console.log(cart);
+    return res.redirect('back');
   } catch (err) {
     console.log(err);
   }
 });
+
 
 module.exports = router;

@@ -45,7 +45,8 @@
 										<h4>&#8358 {{ price }}</h4>
 									</td>
 									<td class="total-col ">
-										<form action="/cart/remove/{{id}}" method="get">
+										<form action="/cart/remove/{{id}}" method="post">
+											<input type="hidden" name="index" value=" {{ @index}}">
 											<button type="submit" class="btn btn-danger"><i
 													class="flaticon-remove"></i></button>
 										</form>
@@ -95,7 +96,8 @@
 										Cart</span></button>
 							</form>
 							<a href=" {{_doc._id }} " class="wishlist-btn"><i class="flaticon-heart"></i></a>
-							<a href="/product/{{ _doc._id}} " class="wishlist-btn"><i class="flaticon-visible"></i></a>
+							<a id="wish" href="/product/{{ _doc._id}} " class="wishlist-btn"><i
+									class="flaticon-visible"></i></a>
 						</div>
 					</div>
 					<div class="pi-text">
