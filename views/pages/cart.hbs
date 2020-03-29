@@ -2,11 +2,17 @@
 <section class="cart-section spad">
 	<div class="container">
 		{{>messages }}
+		<script>
+			$('#clear').click(function () {
+				alert('dddfdfdf');
+			});
+		</script>
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="cart-table">
 					<h3>Your Cart &nbsp; <span>
-							<form action="/cart/clear" method="POST"><button class="btn btn-danger" type="submit">Empty
+							<form action="/cart/clear" method="POST"><button id="clear" class="btn btn-danger"
+									type="submit">Empty
 									Cart</button></form>
 						</span></h3>
 					<div class="cart-table-warp">
@@ -17,7 +23,7 @@
 									<th class="product-th">Product</th>
 									<th class="quy-th">Quantity</th>
 									<th class="size-th">SizeSize</th>
-									<th class="total-th">Price</th>
+									<th class="total-th">Price (&#8358)</th>
 									<th class="total-th">Action</th>
 								</tr>
 							</thead>
@@ -25,33 +31,33 @@
 							<tbody>
 								<tr>
 									<td class="product-col">
-										<img src="/../uploads/{{ image }}" alt="product image">
+										<img src="/../uploads/{{ image }}" alt="">
 										<div class="pc-title">
 											<h4 {{brand}}></h4>
 											<p>{{ product }}</p>
 										</div>
 									</td>
 									<td class="quy-col">
-										<div class="quantity">
+										{{ quantity }}
+										{{!-- <div class="quantity">
 											<div class="pro-qty">
 												<form action="/cart/add/{{id}}" method="post">
 													<input type="text" name="inc" value="{{ quantity }}">
-
 												</form>
-											</div>
-										</div>
+											</div>this.style.visibility='hidden';
+										</div> --}}
 									</td>
 									<td class="size-col">
-										<h4>Size {{ size }}</h4>
+										<h4>{{ size }}</h4>
 									</td>
 									<td class="total-col">
-										<h4>&#8358 {{ price }}</h4>
+										<h4> {{ price }}</h4>
 									</td>
 									<td class="total-col ">
 										<form action="/cart/remove/{{id}}" method="post">
 											<input type="hidden" name="index" value=" {{ @index}}">
-											<button type="submit" class="btn btn-danger"><i
-													class="flaticon-remove"></i></button>
+											<button onclick="$(this).hide();" id="hideBtn" type="submit"
+												class="btn btn-danger"><i class="flaticon-remove"></i></button>
 										</form>
 									</td>
 								</tr>
@@ -63,7 +69,7 @@
 						{{/if}}
 					</div>
 					<div class="total-cost">
-						<h6>Total <span>&#8358 {{math cart.total }}.00</span></h6>
+						<h6>Total <span>&#8358 {{ math cart.total }}.00</span></h6>
 					</div>
 				</div>
 			</div>
@@ -120,3 +126,11 @@
 		font-size: 24px;
 	}
 </style>
+<script>
+	$(document).ready(function () {
+
+	});
+
+
+</script>
+<script src="jq/jquery.min.js"></script>

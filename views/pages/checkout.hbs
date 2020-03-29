@@ -26,15 +26,15 @@
 					</div>
 					<div class="row address-inputs">
 						<div class="col-md-12">
-							<input type="text" placeholder="Address">
-							<input type="text" placeholder="Address line 2">
-							<input type="text" placeholder="Country">
+							<input type="text" name="address" required placeholder="Address">
+							<input type="text" name="address2" placeholder="Address line 2">
+							<input type="text" name="state" required placeholder="State">
 						</div>
 						<div class="col-md-6">
-							<input type="text" placeholder="Zip code">
+							<input type="text" name="code" required placeholder="Zip code">
 						</div>
 						<div class="col-md-6">
-							<input type="text" placeholder="Phone no.">
+							<input type="text" name="mobile" required placeholder="Phone no.">
 						</div>
 					</div>
 					<div class="cf-title">Delievery Info</div>
@@ -45,7 +45,7 @@
 						<div class="col-6">
 							<div class="cf-radio-btns">
 								<div class="cfr-item">
-									<input type="radio" name="shipping" id="ship-1">
+									<input type="radio" value="free" name="shipping" id="ship-1">
 									<label for="ship-1">Free</label>
 								</div>
 							</div>
@@ -56,7 +56,7 @@
 						<div class="col-6">
 							<div class="cf-radio-btns">
 								<div class="cfr-item">
-									<input type="radio" name="shipping" id="ship-2">
+									<input type="radio" value="PAID" name="shipping" id="ship-2">
 									<label for="ship-2">&#8358 500.00</label>
 								</div>
 							</div>
@@ -68,7 +68,7 @@
 						<li>Credit / Debit card<a href="#"><img src="img/mastercart.png" alt=""></a></li>
 						<li>Pay when you get the package</li>
 					</ul>
-					<button type="submit" class="site-btn submit-order-btn">Place Order</button>
+					<button type="submit" name="submit" class="site-btn submit-order-btn">Place Order</button>
 				</form>
 			</div>
 			<div class="col-lg-4 order-1 order-lg-2">
@@ -78,9 +78,9 @@
 					{{#each cart.item }}
 					<ul class="product-list">
 						<li>
-							<div class="pl-thumb"><img src="/../uploads/{{ image }}" alt="product image "></div>
-							<h6>{{ product }}s</h6>
-							<p>{{quantity}}</p>
+							<div class="pl-thumb"><img src="/../uploads/{{ image }}" alt=""></div>
+							<h6>{{ product }}</h6>
+							<p>{{ quantity }}</p>
 							<p>&#8358 {{ price }}.00</p>
 						</li>
 					</ul>

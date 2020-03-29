@@ -89,7 +89,7 @@ router.get('/contact', csrfProtection, (req, res, next) => {
     Product.find({ ProductCategory: 'Women Fashion' }, (err, product) => {
       if (err) throw err;
       res.render('pages/contact', { title: 'Contact Us', product: product, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
-      req.session.errors = null;
+      req.session.errors = '';
     }).limit(4);
   } catch (err) {
     console.log(err);
@@ -204,7 +204,7 @@ router.get('/checkout', csrfProtection, (req, res, next) => {
       return res.redirect('/cart');
     } else {
       res.render('pages/checkout', { title: 'Product Checkout Page', cart: displayCart, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors });
-      req.session.errors = null;
+      req.session.errors = '';
     }
   } catch (err) {
     console.log(err);
@@ -278,7 +278,26 @@ router.post('/cart/remove/:id', (req, res, next) => {
     let index = req.body.index;
     let product = items;
     if (cart[productID].id == productID) {
-      product.splice(cart[productID].id, 1);
+      let a = product.splice(index, 1);
+      console.log(a);
+      index = '';
+      cart[productID].id = '';
+      cart[productID].product = '';
+      cart[productID].brand = '';
+      cart[productID].price = '';
+      cart[productID].image = '';
+      cart[productID].size = '';
+      cart[productID].quantity = '';
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log(product);
+      // delete cart[productID].id;
+      // delete cart[productID].product;
+      // delete cart[productID].brand;
+      // delete cart[productID].price;
+      // delete cart[productID].image;
+      // delete cart[productID].size;
+      // delete cart[productID].quantity;
     }
     return res.redirect('back');
   } catch (err) {
