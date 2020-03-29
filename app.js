@@ -43,7 +43,6 @@ app.engine('hbs', hbs({
     },
     math: function (total) {
       return Number(total);
-
     }
   }
 }));

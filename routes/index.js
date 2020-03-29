@@ -280,21 +280,18 @@ router.post('/cart/remove/:id', (req, res, next) => {
     if (cart[productID].id == productID) {
       product.splice(cart[productID].id, 1);
     }
-    //console.log(cart[productID].id);
-    //req.session.destroy();
-    //let cart = req.session.destroy();
-    //displayCart = req.session.destroy();
     return res.redirect('back');
   } catch (err) {
     console.log(err);
   }
 });
 
-//logic to empty from cart
+//logic to empty cart
 router.post('/cart/clear', (req, res, next) => {
   try {
     req.session.cart = req.session.cart || {};
     let cart = req.session.cart;
+    if (!cart) { return false; }
     req.session.destroy();
     return res.redirect('back');
   } catch (err) {

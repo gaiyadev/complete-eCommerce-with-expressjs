@@ -25,7 +25,11 @@
 						<div class="up-item">
 							<div class="shopping-card">
 								<i class="flaticon-bag"></i>
-								<span>{{qty }}</span>
+								{{#if cart.item }}
+								{{!-- {{#each cart.item }} --}}
+								<span>{{ cart.total  }}</span>
+								{{!-- {{/each}} --}}
+								{{/if}}
 							</div>
 							<a href="/cart">Shopping Cart</a>
 						</div>

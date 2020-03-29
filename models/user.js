@@ -103,7 +103,7 @@ module.exports.createUser = (newUser, callback) => {
             from: process.env.APP_EMAIL,
             to: newUser.Email,
             subject: 'NodeStore Administrator',
-            text: "You have been Register as an Administrator with the following details details.."
+            text: "Your account has been created successfully with the following details details.."
                 + "Username:" + " " + newUser.Username + " " + " " + "Email" + " " + newUser.Email + "<br/>" +
                 "Please click on the following link, or paste this into your browser to login" + " " +
                 "<a href='http://localhost:3000/users/login/'>Login</a>"
