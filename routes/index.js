@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Review = require('../models/review');
 const Message = require('../models/contact');
+const auth = require('../middleware/routesMiddleware');
 var express = require('express');
 var csrf = require('csurf')
 const csrfProtection = csrf({ cookie: true });
@@ -317,6 +318,7 @@ router.post('/cart/clear', (req, res, next) => {
     console.log(err);
   }
 });
+
 
 
 module.exports = router;

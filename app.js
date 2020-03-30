@@ -1,5 +1,6 @@
 const moment = require('moment');
 const config = require('config');
+require('dotenv').config();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const ExpressSession = require('express-session');
@@ -55,20 +56,28 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser('keyboard key'));
+app.use(cookieParser(process.env.APP_COOKIE_KEY));
 app.use(express.static(path.join(__dirname, 'public')));
 
+let expireDate = new Date(Date.now() + 60 * 60 * 1000); // 1hr
 // Session middleware
 app.use(ExpressSession({
-  secret: 'max',
+  secret: process.env.APP_SESSION_KEY,
+  name: process.env.APP_SESSION_NAME,
   saveUninitialized: false,
   resave: false,
   cookie: {
-    maxAge: 60000000
+    secure: false, //But Security best practice is to set it to true
+    maxAge: expireDate,
+    httpOnly: true,
+    expires: expireDate
   }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// disable x power
+app.disable('x-powered-by');
 
 // Express vaidator middleware
 app.use(expressValidator());

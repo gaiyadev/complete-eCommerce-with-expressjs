@@ -113,7 +113,7 @@ router.get('/reset-password/:token', csrfProtection, async (req, res, next) => {
 router.post('/logout', (req, res) => {
   let token = req.cookies.token;
   delete token;
-  res.clearCookie(token, { path: '/users/home' });
+  res.clearCookie(token);
   return res.redirect('/users/login');
 });
 
@@ -396,7 +396,7 @@ router.post('/login', (req, res, next) => {
         req.session.message = {
           type: 'danger',
           intro: '',
-          message: 'This email is not associated to any account'
+          message: 'Invalid Username or Password'
         },
           res.location('back');
         res.redirect('back');
@@ -407,17 +407,16 @@ router.post('/login', (req, res, next) => {
             req.session.message = {
               type: 'danger',
               intro: '',
-              message: 'Invalid user password'
+              message: 'Invalid Username or Password'
             }
             res.location('back');
             res.redirect('back');
           } else {
             // success login ... Generating jwt for auth
             jwt.sign({ _id: user._id, Email: user.Email }, process.env.APP_SECRET_KEY, {
-              expiresIn: '1d'
+              expiresIn: '1h'
             }, (err, token) => {
               if (err) throw err;
-              //console.log(token);
               res.cookie('token', token, { maxAge: 60 * 60 * 60 });
               //  res.header('x-auth-token', token);
               return res.redirect('/users/home');
@@ -503,7 +502,7 @@ router.post('/signup', (req, res, next) => {
         }
         const token = User.generateAuthToken();
         res.header('x-auth-token', token);
-        console.log('signup' + token);
+        //console.log('signup' + token);
         return res.redirect('/users/login');
       });
     }

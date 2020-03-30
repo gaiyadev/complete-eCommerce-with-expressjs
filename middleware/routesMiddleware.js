@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 // Route Middleware
 
-
 module.exports = function (req, res, next) {
     const token = req.cookies.token;
     if (!token) {

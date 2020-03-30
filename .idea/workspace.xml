@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ba495d32-2629-40c2-bc08-0df4d2a92b71" name="Default Changelist" comment="" />
+    <list default="true" id="ba495d32-2629-40c2-bc08-0df4d2a92b71" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/routesMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/routesMiddleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -11,6 +17,9 @@
     <execution>
       <executable />
     </execution>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YT8BeoTt57U3B1lEDM582pTUiC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -55,6 +64,7 @@
       <workItem from="1582955092140" duration="11241000" />
       <workItem from="1584104750578" duration="43000" />
       <workItem from="1584734615895" duration="13000" />
+      <workItem from="1585546012413" duration="51000" />
     </task>
     <servers />
   </component>
