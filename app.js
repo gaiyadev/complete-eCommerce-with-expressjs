@@ -76,7 +76,7 @@ app.use(ExpressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// disable x power
+// disable x-power-by
 app.disable('x-powered-by');
 
 // Express vaidator middleware
