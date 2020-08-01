@@ -20,3 +20,6 @@ Technologies Used
 5. Express handlbars
 6. jwt
 7. Passportjs
+
+## Installation
+Clone the repo and run npm install to install all dependencies
