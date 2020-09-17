@@ -1,5 +1,5 @@
 # complete-eCommerce-with-expressjs
-A complete E-commerce website for learning purpose
+A complete E-commerce website built using Expressjs for learning purpose
 
 complete E-commerce website built using expressjs and MongoDb
 Key Functionalities
