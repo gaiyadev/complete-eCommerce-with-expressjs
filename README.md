@@ -19,7 +19,8 @@ Technologies Used
 4. HTML. CSS,  Bootstrap etc
 5. Express handlbars
 6. jwt
-7. Passportjs
+7. Passportj
+8. etc
 
 ## Installation
 Clone the repo and run npm install to install all dependencies
